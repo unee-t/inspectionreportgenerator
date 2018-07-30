@@ -5,13 +5,12 @@
 <meta name="viewport" content="width=device-width,minimum-scale=1">
 <title>Sign here</title>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <style>
 body { font-family: "Segoe UI", "Seravek", sans-serif; background-color: grey; }
 </style>
 </head>
 <body>
-<h1>Please sign below</h1>
-
 <div id="signature-pad" class="signature-pad">
 <div class="signature-pad--body">
 <canvas></canvas>
@@ -27,6 +26,16 @@ body { font-family: "Segoe UI", "Seravek", sans-serif; background-color: grey; }
 </div>
 </div>
 
+<div id="contact">
+<form id="myForm" v-on:submit.prevent="submitForm">
+<input required type=text name=name placeholder="Full name">
+<input required type=text size=50 v-model="signature" name=signature>
+{{ .csrfField }}
+<br>
+<button class="button" id="button" type="submit">Sign</button>
+</form>
+</div>
+
 <script>
 var canvas = document.querySelector("canvas");
 var signaturePad = new SignaturePad(canvas, {
@@ -39,6 +48,30 @@ var clearButton = wrapper.querySelector("[data-action=clear]");
 clearButton.addEventListener("click", function (event) {
 	  signaturePad.clear();
 });
+
+var app = new Vue({
+	delimiters: ['${', '}'],
+	el: '#contact',
+	computed: {
+		signature: function () {
+			return signaturePad.toDataURL("image/jpg")
+		}
+	},
+	methods: {
+	submitForm: function (x) {
+		fetch('/', { method: 'POST',
+			headers: { "X-CSRF-Token": x.target.elements["gorilla.csrf.Token"].value },
+			credentials: 'same-origin',
+			body: new FormData(x.target) })
+		.then(() => {
+			var button = document.getElementById("button")
+			button.disabled = true
+			button.innerText = 'Sent!'
+		})
+	}
+	}
+})
+
 </script>
 
 
