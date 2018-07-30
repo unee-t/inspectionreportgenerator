@@ -28,12 +28,12 @@ new Vue({
   },
   methods: {
     submitForm: function (x) {
-      console.log('here')
-      fetch('/echo/html', { method: 'POST',
+      fetch('/pdfgen', { method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'].value },
         body: new FormData(x.target) })
         .then(() => {
-          var button = document.getElementById('button')
-          button.innerText = 'Sent!'
+          console.log('Submitted')
         })
     },
 

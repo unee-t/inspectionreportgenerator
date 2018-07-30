@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"net/http/httputil"
 	"os"
 
 	"html/template"
@@ -17,13 +18,14 @@ func main() {
 
 	app.PathPrefix("/templates").Handler(http.FileServer(http.Dir(".")))
 	app.Get("/", handleIndex)
+	app.Post("/pdfgen", handlePost)
 
 	var options []csrf.Option
 	// If developing locally
-	options = append(options, csrf.Secure(false))
+	// options = append(options, csrf.Secure(false))
 
 	if err := http.ListenAndServe(addr,
-		csrf.Protect([]byte("pdfgen"), options...)(app)); err != nil {
+		csrf.Protect([]byte("32-byte-long-auth-key"), options...)(app)); err != nil {
 		log.WithError(err).Fatal("error listening")
 	}
 }
@@ -39,4 +41,26 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		csrf.TemplateTag: csrf.TemplateField(r),
 		"Stage":          os.Getenv("UP_STAGE"),
 	})
+}
+
+func handlePost(w http.ResponseWriter, r *http.Request) {
+	dump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	err = r.ParseMultipartForm(0)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	for key, values := range r.PostForm { // range over map
+		for _, value := range values { // range over []string
+			log.Infof("Key: %v Value: %v", key, value)
+		}
+	}
+
+	log.Info(string(dump))
 }
