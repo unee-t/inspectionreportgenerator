@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<title>Sign here</title>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+<style>
+body { font-family: "Segoe UI", "Seravek", sans-serif; background-color: grey; }
+</style>
+</head>
+<body>
+<h1>Please sign below</h1>
+
+<div id="signature-pad" class="signature-pad">
+<div class="signature-pad--body">
+<canvas></canvas>
+</div>
+<div class="signature-pad--footer">
+<div class="description">Sign above</div>
+
+<div class="signature-pad--actions">
+<div>
+<button type="button" class="button clear" data-action="clear">Clear</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+var canvas = document.querySelector("canvas");
+var signaturePad = new SignaturePad(canvas, {
+  // It's Necessary to use an opaque color when saving image as JPEG;
+  // this option can be omitted if only saving as PNG or SVG
+  backgroundColor: 'rgb(255, 255, 255)'
+});
+var wrapper = document.getElementById("signature-pad");
+var clearButton = wrapper.querySelector("[data-action=clear]");
+clearButton.addEventListener("click", function (event) {
+	  signaturePad.clear();
+});
+</script>
+
+
+</body>
+</html>
