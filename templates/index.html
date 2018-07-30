@@ -7,73 +7,40 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <style>
-body { font-family: "Segoe UI", "Seravek", sans-serif; background-color: grey; }
+body { font-family: "Segoe UI", "Seravek", sans-serif; background-color: lightblue; }
+canvas {
+  border: 1px solid black;
+}
 </style>
 </head>
 <body>
-<div id="signature-pad" class="signature-pad">
-<div class="signature-pad--body">
-<canvas></canvas>
-</div>
-<div class="signature-pad--footer">
-<div class="description">Sign above</div>
+<div id="app">
 
-<div class="signature-pad--actions">
-<div>
-<button type="button" class="button clear" data-action="clear">Clear</button>
-</div>
-</div>
-</div>
-</div>
+<label>Number of signatures required <input type=number v-model.number="signaturesNeeded"></label>
 
-<div id="contact">
 <form id="myForm" v-on:submit.prevent="submitForm">
-<input required type=text name=name placeholder="Full name">
-<input required type=text size=50 v-model="signature" name=signature>
+<template v-for="item in signaturesNeeded">
+<signature-pad @update="(val) => updateSignature(item-1, val)" ></signature-pad>
+<input required type=text placeholder="Name" name=name>
+</template>
 {{ .csrfField }}
-<br>
-<button class="button" id="button" type="submit">Sign</button>
+<button type="submit">Sign</button>
 </form>
 </div>
 
-<script>
-var canvas = document.querySelector("canvas");
-var signaturePad = new SignaturePad(canvas, {
-  // It's Necessary to use an opaque color when saving image as JPEG;
-  // this option can be omitted if only saving as PNG or SVG
-  backgroundColor: 'rgb(255, 255, 255)'
-});
-var wrapper = document.getElementById("signature-pad");
-var clearButton = wrapper.querySelector("[data-action=clear]");
-clearButton.addEventListener("click", function (event) {
-	  signaturePad.clear();
-});
-
-var app = new Vue({
-	delimiters: ['${', '}'],
-	el: '#contact',
-	computed: {
-		signature: function () {
-			return signaturePad.toDataURL("image/jpg")
-		}
-	},
-	methods: {
-	submitForm: function (x) {
-		fetch('/', { method: 'POST',
-			headers: { "X-CSRF-Token": x.target.elements["gorilla.csrf.Token"].value },
-			credentials: 'same-origin',
-			body: new FormData(x.target) })
-		.then(() => {
-			var button = document.getElementById("button")
-			button.disabled = true
-			button.innerText = 'Sent!'
-		})
-	}
-	}
-})
-
+<script type='text/x-template' id="signaturepad">
+<div class="signature-pad">
+<div class="signature-pad--body">
+<canvas ref="canv"></canvas>
+<input required type=hidden v-model=dataUrl name=signature>
+</div>
+<div class="signature-pad--footer">
+<div class="description">Sign above</div>
+</div>
+</div>
 </script>
 
+<script src="/templates/main.js"></script>
 
 </body>
 </html>

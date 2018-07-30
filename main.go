@@ -15,6 +15,7 @@ func main() {
 	addr := ":" + os.Getenv("PORT")
 	app := pat.New()
 
+	app.PathPrefix("/templates").Handler(http.FileServer(http.Dir(".")))
 	app.Get("/", handleIndex)
 
 	var options []csrf.Option
