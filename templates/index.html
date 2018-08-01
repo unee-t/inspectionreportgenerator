@@ -20,8 +20,8 @@ canvas {
 
 <form id="myForm" v-on:submit.prevent="submitForm">
 <template v-for="item in signaturesNeeded">
-<signature-pad @update="(val) => updateSignature(item-1, val)" ></signature-pad>
-<input required type=text placeholder="Name" name=name>
+<signature-pad @update="(val) => updateSignature(item-1, val)" :item="item"></signature-pad>
+<input required type=text placeholder="Name" :name="'name.' + item">
 </template>
 {{ .csrfField }}
 <button type="submit">Sign</button>
@@ -32,7 +32,7 @@ canvas {
 <div class="signature-pad">
 <div class="signature-pad--body">
 <canvas ref="canv"></canvas>
-<input required type=hidden v-model=dataUrl name=signature>
+<input required type=hidden v-model=dataUrl :name="'signature.' + item">
 </div>
 <div class="signature-pad--footer">
 <div class="description">Sign above</div>

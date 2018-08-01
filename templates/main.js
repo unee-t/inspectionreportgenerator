@@ -1,5 +1,7 @@
 Vue.component('signature-pad', {
   template: '#signaturepad',
+  props: ['item'],
+  delimiters: ['${', '}'],
   data () {
     return {
       signaturePad: null,
@@ -20,6 +22,7 @@ Vue.component('signature-pad', {
 
 new Vue({
   el: '#app',
+  delimiters: ['${', '}'],
   data: {
     signaturesNeeded: 1,
     // all signature urls as example
