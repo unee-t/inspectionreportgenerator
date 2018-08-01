@@ -10,11 +10,16 @@ import (
 	"github.com/apex/log"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/pat"
+	"github.com/gorilla/schema"
 )
 
 type Signature struct {
 	Name    string
-	dataURI string
+	DataURI string
+}
+
+type Signoff struct {
+	Signatures []Signature
 }
 
 func main() {
@@ -49,19 +54,28 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
+
 	err := r.ParseMultipartForm(0)
+
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	// var signatures []Signature
+	// fmt.Println("DEBUG", r.PostForm)
 
-	fmt.Println(r.PostForm)
-	// for key, values := range r.PostForm { // range over map
-	// 	for _, value := range values { // range over []string
-	// 		log.Infof("Key: %v Value: %v", key, value)
-	// 	}
-	// }
+	signoff := new(Signoff)
+	decoder := schema.NewDecoder()
+	decoder.IgnoreUnknownKeys(true)
+	err = decoder.Decode(signoff, r.PostForm)
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	for _, v := range signoff.Signatures {
+		fmt.Println(v.Name)
+	}
 
 }
