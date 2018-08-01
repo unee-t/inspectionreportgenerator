@@ -15,7 +15,7 @@ import (
 
 type Signature struct {
 	Name    string
-	DataURI string
+	DataURI template.URL
 }
 
 type Signoff struct {
@@ -62,8 +62,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fmt.Println("DEBUG", r.PostForm)
-
 	signoff := new(Signoff)
 	decoder := schema.NewDecoder()
 	decoder.IgnoreUnknownKeys(true)
@@ -76,6 +74,15 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	for _, v := range signoff.Signatures {
 		fmt.Println(v.Name)
+		// fmt.Println(v.DataURI)
 	}
+
+	t := template.Must(template.New("").ParseGlob("templates/signoff.html"))
+	f, err := os.Create("signed.html")
+	if err != nil {
+		return
+	}
+	t.ExecuteTemplate(f, "signoff.html", signoff)
+	f.Close()
 
 }
