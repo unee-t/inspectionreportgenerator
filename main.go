@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
-	"net/http/httputil"
 	"os"
 
 	"html/template"
@@ -11,6 +11,11 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/pat"
 )
+
+type Signature struct {
+	Name    string
+	dataURI string
+}
 
 func main() {
 	addr := ":" + os.Getenv("PORT")
@@ -22,7 +27,7 @@ func main() {
 
 	var options []csrf.Option
 	// If developing locally
-	// options = append(options, csrf.Secure(false))
+	options = append(options, csrf.Secure(false))
 
 	if err := http.ListenAndServe(addr,
 		csrf.Protect([]byte("32-byte-long-auth-key"), options...)(app)); err != nil {
@@ -44,23 +49,19 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
-	dump, err := httputil.DumpRequest(r, true)
+	err := r.ParseMultipartForm(0)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	err = r.ParseMultipartForm(0)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+	// var signatures []Signature
 
-	for key, values := range r.PostForm { // range over map
-		for _, value := range values { // range over []string
-			log.Infof("Key: %v Value: %v", key, value)
-		}
-	}
+	fmt.Println(r.PostForm)
+	// for key, values := range r.PostForm { // range over map
+	// 	for _, value := range values { // range over []string
+	// 		log.Infof("Key: %v Value: %v", key, value)
+	// 	}
+	// }
 
-	log.Info(string(dump))
 }
