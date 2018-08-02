@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -148,7 +150,7 @@ func pdfgen(url string) (pdfurl string, err error) {
 		return
 	}
 
-	payload := strings.NewReader("{\n  \"url\": \"https://distill.pub/2016/augmented-rnns/\",\n  \"css\": \"h2 { page-break-before: always; page-break-after: avoid; } h3 { page-break-after: avoid } figure, ul, ol { page-break-inside: avoid } dt-appendix, dt-appendix h3 { page-break-before: always }\",\n  \"screen\": false,\n  \"scale\": 1,\n  \"displayHeaderFooter\": false,\n  \"printBackground\": false,\n  \"landscape\": false,\n  \"pageRanges\": \"\",\n  \"format\": \"Letter\",\n  \"margin\": {\n  \t\"top\": \"24px\",\n  \t\"right\": \"16px\",\n  \t\"bottom\": \"24px\",\n  \t\"left\": \"16px\"\n  }\n}")
+	payload := strings.NewReader(fmt.Sprintf("{\n  \"url\": \"%s\",\n  \"css\": \"h2 { page-break-before: always; page-break-after: avoid; } h3 { page-break-after: avoid } figure, ul, ol { page-break-inside: avoid } dt-appendix, dt-appendix h3 { page-break-before: always }\",\n  \"screen\": false,\n  \"scale\": 1,\n  \"displayHeaderFooter\": false,\n  \"printBackground\": false,\n  \"landscape\": false,\n  \"pageRanges\": \"\",\n  \"format\": \"Letter\",\n  \"margin\": {\n  \t\"top\": \"24px\",\n  \t\"right\": \"16px\",\n  \t\"bottom\": \"24px\",\n  \t\"left\": \"16px\"\n  }\n}", url))
 
 	req, err := http.NewRequest("POST", "https://pdf.cool/generate", payload)
 
@@ -170,7 +172,8 @@ func pdfgen(url string) (pdfurl string, err error) {
 
 	svc := s3.New(cfg)
 
-	filename := time.Now().Format("2006-01-02") + "/" + "test.pdf"
+	basename := path.Base(url)
+	filename := time.Now().Format("2006-01-02") + "/" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
 	putparams := &s3.PutObjectInput{
 		Bucket:      aws.String("dev-media-unee-t"),
 		Body:        bytes.NewReader(body),
@@ -191,7 +194,12 @@ func pdfgen(url string) (pdfurl string, err error) {
 }
 
 func handlePdfgen(w http.ResponseWriter, r *http.Request) {
-	url, err := pdfgen("nonesense")
+	url := r.URL.Query().Get("url")
+	if url == "" {
+		http.Error(w, "Missing URL", 400)
+		return
+	}
+	url, err := pdfgen(url)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate PDF")
 		http.Error(w, err.Error(), 500)
