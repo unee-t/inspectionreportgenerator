@@ -1,17 +1,25 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"html/template"
 
 	"github.com/apex/log"
+	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/pat"
 	"github.com/gorilla/schema"
+	"github.com/tj/go/http/response"
 )
 
 type Signature struct {
@@ -83,13 +91,44 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	filename = reg.ReplaceAllString(filename, "") + ".html"
 
 	t := template.Must(template.New("").ParseGlob("templates/signoff.html"))
-	f, err := os.Create(filename)
+	var b bytes.Buffer
+
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	t.ExecuteTemplate(f, "signoff.html", signoff)
-	log.Infof("Wrote: %s", filename)
-	f.Close()
+	t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
+
+	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	svc := s3.New(cfg)
+
+	filename = time.Now().Format("2006-01-02") + "/" + filename
+	putparams := &s3.PutObjectInput{
+		Bucket:      aws.String("dev-media-unee-t"),
+		Body:        bytes.NewReader(b.Bytes()),
+		Key:         aws.String(filename),
+		ACL:         s3.ObjectCannedACLPublicRead,
+		ContentType: aws.String("text/html; charset=UTF-8"),
+	}
+
+	req := svc.PutObjectRequest(putparams)
+	_, err = req.Send()
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	log.Infof("Wrote to s3: https://media.dev.unee-t.com/%s", filename)
+
+	response.JSON(w, struct {
+		HTML string
+	}{
+		fmt.Sprintf("https://media.dev.unee-t.com/%s", filename),
+	})
 
 }
