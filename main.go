@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"regexp"
@@ -16,10 +17,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/gorilla/csrf"
-	"github.com/gorilla/pat"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"github.com/tj/go/http/response"
+	"github.com/unee-t/env"
 )
 
 type Signature struct {
@@ -33,13 +36,15 @@ type Signoff struct {
 
 func main() {
 	addr := ":" + os.Getenv("PORT")
-	app := pat.New()
+	app := mux.NewRouter()
 
 	app.PathPrefix("/templates").Handler(http.FileServer(http.Dir(".")))
-	app.Get("/", handleIndex)
-	app.Post("/pdfgen", handlePost)
+	app.HandleFunc("/", handleIndex).Methods("GET")
+	app.HandleFunc("/htmlgen", handlePost).Methods("POST")
+	app.HandleFunc("/pdfgen", handlePdfgen).Methods("GET")
 
 	var options []csrf.Option
+
 	// If developing locally
 	options = append(options, csrf.Secure(false))
 
@@ -121,12 +126,81 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Infof("Wrote to s3: https://media.dev.unee-t.com/%s", filename)
-
 	response.JSON(w, struct {
 		HTML string
 	}{
-		fmt.Sprintf("https://media.dev.unee-t.com/%s", filename),
+		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", filename),
 	})
 
+}
+
+func pdfgen(url string) (pdfurl string, err error) {
+
+	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
+	if err != nil {
+		log.WithError(err).Fatal("setting up credentials")
+		return
+	}
+	cfg.Region = endpoints.ApSoutheast1RegionID
+	e, err := env.New(cfg)
+	if err != nil {
+		log.WithError(err).Warn("error getting unee-t env")
+		return
+	}
+
+	payload := strings.NewReader("{\n  \"url\": \"https://distill.pub/2016/augmented-rnns/\",\n  \"css\": \"h2 { page-break-before: always; page-break-after: avoid; } h3 { page-break-after: avoid } figure, ul, ol { page-break-inside: avoid } dt-appendix, dt-appendix h3 { page-break-before: always }\",\n  \"screen\": false,\n  \"scale\": 1,\n  \"displayHeaderFooter\": false,\n  \"printBackground\": false,\n  \"landscape\": false,\n  \"pageRanges\": \"\",\n  \"format\": \"Letter\",\n  \"margin\": {\n  \t\"top\": \"24px\",\n  \t\"right\": \"16px\",\n  \t\"bottom\": \"24px\",\n  \t\"left\": \"16px\"\n  }\n}")
+
+	req, err := http.NewRequest("POST", "https://pdf.cool/generate", payload)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+e.GetSecret("PDFCOOLTOKEN"))
+
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		log.WithError(err).Fatal("failed to make request")
+		return
+	}
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	// fmt.Println(res)
+	// fmt.Println(string(body))
+
+	svc := s3.New(cfg)
+
+	filename := time.Now().Format("2006-01-02") + "/" + "test.pdf"
+	putparams := &s3.PutObjectInput{
+		Bucket:      aws.String("dev-media-unee-t"),
+		Body:        bytes.NewReader(body),
+		Key:         aws.String(filename),
+		ACL:         s3.ObjectCannedACLPublicRead,
+		ContentType: aws.String("application/pdf; charset=UTF-8"),
+	}
+
+	s3req := svc.PutObjectRequest(putparams)
+	_, err = s3req.Send()
+
+	if err != nil {
+		log.WithError(err).Fatal("failed to put")
+		return
+	}
+
+	return filename, err
+}
+
+func handlePdfgen(w http.ResponseWriter, r *http.Request) {
+	url, err := pdfgen("nonesense")
+	if err != nil {
+		log.WithError(err).Fatal("failed to generate PDF")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	response.JSON(w, struct {
+		PDF string
+	}{
+		url,
+	})
 }

@@ -31,7 +31,7 @@ new Vue({
   },
   methods: {
     async submitForm (x) {
-      const result = await fetch('/pdfgen', { method: 'POST',
+      const result = await fetch('/htmlgen', { method: 'POST',
         credentials: 'same-origin',
         headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'].value },
         body: new FormData(x.target) })

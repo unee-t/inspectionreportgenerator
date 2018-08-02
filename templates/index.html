@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <style>
-body { font-family: "Segoe UI", "Seravek", sans-serif; background-color: lightblue; }
+body { font-family: Roboto,sans-serif; background-color: #0095b6; }
 canvas {
   border: 1px solid black;
 }
@@ -16,7 +16,7 @@ canvas {
 <body>
 <div id="app">
 
-<label>Number of signatures required <input type=number v-model.number="signaturesNeeded"></label>
+<label>Number of signatures required <input style="width: 3em;" min="1" max="10" type=number v-model.number="signaturesNeeded"></label>
 
 <form id="myForm" v-on:submit.prevent="submitForm">
 <template v-for="item in signaturesNeeded">
@@ -24,7 +24,7 @@ canvas {
 <input required type=text placeholder="Name" :name="'Signatures.' + (item - 1) + '.Name'">
 </template>
 {{ .csrfField }}
-<button type="submit">Sign</button>
+<button type="submit">Endorse</button>
 </form>
 <p v-if="html">Generated <a target="_blank" :href=html>${ html }</a></p>
 </div>
