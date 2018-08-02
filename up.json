@@ -19,7 +19,8 @@
         "Effect": "Allow",
         "Resource": "*",
         "Action": [
-          "ssm:GetParameter"
+          "ssm:GetParameter",
+          "s3:*"
         ]
       }
     ]
@@ -29,7 +30,7 @@
       "name": "email.backend",
       "type": "email",
       "emails": [
-        "kai.hendry@unee-t.com"
+        "kai.hendry+pdf@unee-t.com"
       ]
     }
   ],

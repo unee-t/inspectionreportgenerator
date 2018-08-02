@@ -77,6 +77,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	err = decoder.Decode(signoff, r.PostForm)
 
 	if err != nil {
+		log.WithError(err).Fatal("failed to decode form")
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -92,16 +93,12 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	t := template.Must(template.New("").ParseGlob("templates/signoff.html"))
 	var b bytes.Buffer
-
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
 	t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.WithError(err).Fatal("failed to get config")
+		http.Error(w, err.Error(), 500)
 		return
 	}
 	svc := s3.New(cfg)
@@ -119,6 +116,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	_, err = req.Send()
 
 	if err != nil {
+		log.WithError(err).Fatal("failed to put")
 		http.Error(w, err.Error(), 500)
 		return
 	}
