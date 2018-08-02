@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
+	"regexp"
+	"strings"
 
 	"html/template"
 
@@ -72,17 +73,23 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var filename = ""
+
 	for _, v := range signoff.Signatures {
-		fmt.Println(v.Name)
-		// fmt.Println(v.DataURI)
+		filename += strings.ToLower(v.Name)
 	}
 
+	reg, _ := regexp.Compile("[^a-z]+")
+	filename = reg.ReplaceAllString(filename, "") + ".html"
+
 	t := template.Must(template.New("").ParseGlob("templates/signoff.html"))
-	f, err := os.Create("signed.html")
+	f, err := os.Create(filename)
 	if err != nil {
+		http.Error(w, err.Error(), 500)
 		return
 	}
 	t.ExecuteTemplate(f, "signoff.html", signoff)
+	log.Infof("Wrote: %s", filename)
 	f.Close()
 
 }
