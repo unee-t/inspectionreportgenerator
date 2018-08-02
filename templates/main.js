@@ -26,6 +26,7 @@ new Vue({
   data: {
     signaturesNeeded: 1,
     html: '',
+    pdf: '',
     // all signature urls as example
     signatureDataUris: []
   },
@@ -37,6 +38,10 @@ new Vue({
         body: new FormData(x.target) })
         .then((result) => { return result.json() })
       this.html = result.HTML
+      const pdf = await fetch(`/pdfgen?url=${result.HTML}`)
+        .then((result) => { return result.json() })
+      console.log(pdf)
+      this.pdf = pdf.PDF
     },
     updateSignature (index, url) {
       Vue.set(this.signatureDataUris, index, url)

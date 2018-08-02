@@ -190,7 +190,7 @@ func pdfgen(url string) (pdfurl string, err error) {
 		return
 	}
 
-	return filename, err
+	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + filename, err
 }
 
 func handlePdfgen(w http.ResponseWriter, r *http.Request) {
