@@ -26,6 +26,7 @@ canvas {
 {{ .csrfField }}
 <button type="submit">Sign</button>
 </form>
+<p v-if="html">Generated <a target="_blank" :href=html>${ html }</a></p>
 </div>
 
 <script type='text/x-template' id="signaturepad">

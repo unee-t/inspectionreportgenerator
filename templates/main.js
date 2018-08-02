@@ -25,20 +25,19 @@ new Vue({
   delimiters: ['${', '}'],
   data: {
     signaturesNeeded: 1,
+    html: '',
     // all signature urls as example
     signatureDataUris: []
   },
   methods: {
-    submitForm: function (x) {
-      fetch('/pdfgen', { method: 'POST',
+    async submitForm (x) {
+      const result = await fetch('/pdfgen', { method: 'POST',
         credentials: 'same-origin',
         headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'].value },
         body: new FormData(x.target) })
-        .then(() => {
-          console.log('Submitted')
-        })
+        .then((result) => { return result.json() })
+      this.html = result.HTML
     },
-
     updateSignature (index, url) {
       Vue.set(this.signatureDataUris, index, url)
       console.log(this.signatureDataUris)
