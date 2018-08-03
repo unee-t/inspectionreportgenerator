@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	neturl "net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -195,11 +196,26 @@ func pdfgen(url string) (pdfurl string, err error) {
 
 func handlePdfgen(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
+
 	if url == "" {
 		http.Error(w, "Missing URL", 400)
 		return
 	}
-	url, err := pdfgen(url)
+
+	u, err := neturl.Parse(url)
+	if err != nil {
+		log.WithError(err).Fatal("not a URL")
+		http.Error(w, "Missing URL", 400)
+		return
+	}
+
+	if u.Host != "s3-ap-southeast-1.amazonaws.com" &&
+		strings.HasPrefix(u.Path, "/dev-media-unee-t/") {
+		http.Error(w, "Source must be from our S3", 400)
+		return
+	}
+
+	url, err = pdfgen(url)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate PDF")
 		http.Error(w, err.Error(), 500)
