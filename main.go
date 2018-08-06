@@ -152,7 +152,11 @@ func pdfgen(url string) (pdfurl string, err error) {
 		return
 	}
 
-	payload, err := json.Marshal(struct {
+	payload := new(bytes.Buffer)
+	enc := json.NewEncoder(payload)
+	enc.SetIndent("", "    ")
+	enc.SetEscapeHTML(false)
+	enc.Encode(struct {
 		Url        string `json:"url"`
 		Screen     bool   `json:"screen"`
 		HeaderHTML string `json:"headerHTML"`
@@ -163,13 +167,10 @@ func pdfgen(url string) (pdfurl string, err error) {
 		"<h1 style='font-size: 24px;'>Hello</h1>",
 		"<small>Footer</small>",
 	})
-	if err != nil {
-		log.WithError(err).Warn("error marshalling pdf.cool JSON payload")
-		return
-	}
-	log.Infof("JSON payload: %s", string(payload))
 
-	req, err := http.NewRequest("POST", "https://pdf.cool/generate", strings.NewReader(string(payload)))
+	log.Infof("pdf.cool payload: %s", payload.String())
+
+	req, err := http.NewRequest("POST", "https://pdf.cool/generate", payload)
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+e.GetSecret("PDFCOOLTOKEN"))
@@ -183,9 +184,6 @@ func pdfgen(url string) (pdfurl string, err error) {
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-
-	// fmt.Println(res)
-	// fmt.Println(string(body))
 
 	svc := s3.New(cfg)
 
