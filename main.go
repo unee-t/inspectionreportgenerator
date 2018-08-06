@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -151,9 +152,24 @@ func pdfgen(url string) (pdfurl string, err error) {
 		return
 	}
 
-	payload := strings.NewReader(fmt.Sprintf("{\n  \"url\": \"%s\",\n  \"css\": \"h2 { page-break-before: always; page-break-after: avoid; } h3 { page-break-after: avoid } figure, ul, ol { page-break-inside: avoid } dt-appendix, dt-appendix h3 { page-break-before: always }\",\n  \"screen\": false,\n  \"scale\": 1,\n  \"displayHeaderFooter\": false,\n  \"printBackground\": false,\n  \"landscape\": false,\n  \"pageRanges\": \"\",\n  \"format\": \"Letter\",\n  \"margin\": {\n  \t\"top\": \"24px\",\n  \t\"right\": \"16px\",\n  \t\"bottom\": \"24px\",\n  \t\"left\": \"16px\"\n  }\n}", url))
+	payload, err := json.Marshal(struct {
+		Url        string `json:"url"`
+		Screen     bool   `json:"screen"`
+		HeaderHTML string `json:"headerHTML"`
+		FooterHTML string `json:"footerHTML"`
+	}{
+		url,
+		false,
+		"<h1 style='font-size: 24px;'>Hello</h1>",
+		"<small>Footer</small>",
+	})
+	if err != nil {
+		log.WithError(err).Warn("error marshalling pdf.cool JSON payload")
+		return
+	}
+	log.Infof("JSON payload: %s", string(payload))
 
-	req, err := http.NewRequest("POST", "https://pdf.cool/generate", payload)
+	req, err := http.NewRequest("POST", "https://pdf.cool/generate", strings.NewReader(string(payload)))
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+e.GetSecret("PDFCOOLTOKEN"))
