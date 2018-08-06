@@ -18,10 +18,10 @@ import (
 	"html/template"
 
 	"github.com/apex/log"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/endpoints"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
@@ -36,6 +36,7 @@ type Signature struct {
 
 type Signoff struct {
 	Signatures []Signature
+	Unitname   string
 }
 
 func main() {
@@ -65,10 +66,14 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t := template.Must(template.New("").ParseGlob("templates/*.html"))
-	t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+	err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		csrf.TemplateTag: csrf.TemplateField(r),
 		"Stage":          os.Getenv("UP_STAGE"),
 	})
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
@@ -100,9 +105,20 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	reg, _ := regexp.Compile("[^a-z]+")
 	filename = reg.ReplaceAllString(filename, "") + ".html"
 
-	t := template.Must(template.New("").ParseGlob("templates/signoff.html"))
+	t, err := template.New("").ParseFiles("templates/signoff.html")
+	if err != nil {
+		log.WithError(err).Fatal("failed to parse signoff.html")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
 	var b bytes.Buffer
-	t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
+	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
+	if err != nil {
+		log.WithError(err).Fatal("failed to execute template signoff")
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
 	if err != nil {
