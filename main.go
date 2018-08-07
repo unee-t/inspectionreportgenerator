@@ -113,6 +113,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var b bytes.Buffer
+	signoff.Unitname = "20 Maple Avenue, Unit 01-02"
 	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
 	if err != nil {
 		log.WithError(err).Fatal("failed to execute template signoff")
@@ -168,20 +169,31 @@ func pdfgen(url string) (pdfurl string, err error) {
 		return
 	}
 
+	// https://documenter.getpostman.com/view/2810998/pdfcool/77mXfrG
 	payload := new(bytes.Buffer)
 	enc := json.NewEncoder(payload)
 	enc.SetIndent("", "    ")
 	enc.SetEscapeHTML(false)
+	type Margin struct {
+		Top    string `json:"top"`
+		Right  string `json:"right"`
+		Bottom string `json:"bottom"`
+		Left   string `json:"left"`
+	}
 	enc.Encode(struct {
 		Url        string `json:"url"`
 		Screen     bool   `json:"screen"`
 		HeaderHTML string `json:"headerHTML"`
 		FooterHTML string `json:"footerHTML"`
+		Format     string `json:"format"`
+		Margin     Margin `json:"margin"`
 	}{
 		url,
 		false,
-		"<h1 style='font-size: 24px;'>Hello</h1>",
-		"<small>Footer</small>",
+		"<h1 style='float: right; text-align: right; font-size: 24px;'><a href='https://case.unee-t.com/i/123456789'>https://case.unee-t.com/i/123456789</a></h1>",
+		"<small>World of Warcraft</small>",
+		"A4",
+		Margin{"72px", "16px", "80px", "16px"},
 	})
 
 	log.Infof("pdf.cool payload: %s", payload.String())

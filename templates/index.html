@@ -19,7 +19,7 @@ canvas { border: 1px solid black; }
 <form id="myForm" v-on:submit.prevent="submitForm">
 <template v-for="item in signaturesNeeded">
 <signature-pad @update="(val) => updateSignature(item-1, val)" :item="item"></signature-pad>
-<input required type=text placeholder="Name" :name="'Signatures.' + (item - 1) + '.Name'">
+<input autocomplete="off" required type=text placeholder="Name" :name="'Signatures.' + (item - 1) + '.Name'">
 </template>
 {{ .csrfField }}
 <button type="submit">Endorse</button>
@@ -42,7 +42,8 @@ canvas { border: 1px solid black; }
 
 <script src="/templates/main.js"></script>
 
-<p><a href="https://github.com/unee-t/wetsignaturetopdfprototype">Source code</a></p>
+<ul><li><a href="https://github.com/unee-t/frontend/issues/427">Implementing inspection report template</a></li>
+<li><a href="https://github.com/unee-t/wetsignaturetopdfprototype">Source code</a></li></ul>
 
 </body>
 </html>
