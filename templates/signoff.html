@@ -5,19 +5,54 @@
 <meta name="viewport" content="width=device-width,minimum-scale=1">
 <title>Unit Inspection Report</title>
 <style>
-body { font-family: Roboto,sans-serif; }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Regular'), local('Roboto-Regular'), url(http://themes.googleusercontent.com/static/fonts/roboto/v10/2UX7WLTfW3W8TclTUvlFyQ.woff) format('woff');
+}
+html { font-family: 'Roboto', sans-serif; }
+
+/* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
+h2 { text-transform: uppercase; border-bottom: thin solid #0095B6; }
+h1 { background-color:rgba(0, 153, 188, 0.12); }
+
+footer { flow: static(footer); }
+
+/* footer */
+footer {
+text-align: center;
+}
+
+footer ul {
+background: #F3F3F3;
+color: #888;
+text-align: center;
+font-size: 8pt;
+line-height: 12pt;
+padding: 7mm 0;
+margin-top: 2mm;
+}
+
 @page {
-    @bottom {
-        content: counter(page)
-    }
+	size: A4;
+	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
+	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
+	@top-right { content: "Reference: Testing 123\nDate: YYYY-MM-DD"; }
+	@bottom { content: flow(footer); }
 }
 </style>
+
+<script>
+Prince.addScriptFunc("datestamp", function() { return (new Date()).toString(); });
+</script>
+
 </head>
 <body>
 
 <header>
 <img src="https://s3-ap-southeast-1.amazonaws.com/prod-media-unee-t/2018-06-14/unee-t_logo_email.png">
-<h1>Init Inspection Report</h1>
+<h1>Unit Inspection Report</h1>
 <p>Handover of unit - {{ .Unitname }}</p>
 </header>
 
@@ -56,6 +91,28 @@ body { font-family: Roboto,sans-serif; }
 </section>
 
 </article>
+
+
+<article>
+<h1>Room 1 - Big meeting room</h1>
+<section>
+<h2>Reported issues with big meeting room</h2>
+</section>
+</article>
+
+
+<article>
+<h1>Room 2 - Pantry</h1>
+<section>
+<h2>Reported issues with pantry</h2>
+</section>
+
+
+<section>
+<h2>Inventory for pantry</h2>
+</section>
+</article>
+
 
 <footer>
 <ul>
