@@ -40,14 +40,12 @@ new Vue({
         .then((result) => { return result.json() })
       this.html = result.HTML
 
-      const pdf = await fetch(`/pdfgen?url=${result.HTML}`)
-        .then((result) => { return result.json() })
-      console.log(pdf)
-      this.pdf = pdf.PDF
-
-      const ppdf = await fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
-        .then((result) => { return result.json() })
-      this.ppdf = ppdf.PDF
+      fetch(`/pdfgen?url=${result.HTML}`)
+        .then(stream => stream.json())
+        .then(pdf => this.pdf = pdf.PDF)
+      fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
+        .then(stream => stream.json())
+        .then(pdf => this.ppdf = pdf.PDF)
     },
     updateSignature (index, url) {
       Vue.set(this.signatureDataUris, index, url)
