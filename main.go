@@ -46,7 +46,7 @@ func main() {
 	app.PathPrefix("/templates").Handler(http.FileServer(http.Dir(".")))
 	app.HandleFunc("/", handleIndex).Methods("GET")
 	app.HandleFunc("/htmlgen", handlePost).Methods("POST")
-	app.HandleFunc("/pdfgen", handlePdfgen).Methods("GET")
+	app.HandleFunc("/pdfgen", handlePDFgen).Methods("GET")
 
 	var options []csrf.Option
 
@@ -155,7 +155,77 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func pdfgen(url string) (pdfurl string, err error) {
+func pdfraptorgen(url string) (pdfurl string, err error) {
+
+	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
+	if err != nil {
+		log.WithError(err).Fatal("setting up credentials")
+		return
+	}
+	cfg.Region = endpoints.ApSoutheast1RegionID
+	e, err := env.New(cfg)
+	if err != nil {
+		log.WithError(err).Warn("error getting unee-t env")
+		return
+	}
+
+	// https://documenter.getpostman.com/view/2810998/pdfcool/77mXfrG
+	payload := new(bytes.Buffer)
+	enc := json.NewEncoder(payload)
+	enc.SetIndent("", "    ")
+	enc.SetEscapeHTML(false)
+	enc.Encode(struct {
+		Url  string `json:"document_url"`
+		User string `json:"user_credentials"`
+		Test bool   `json:"test"`
+	}{
+		url,
+		e.GetSecret("RAPTORAPIKEY"),
+		true,
+	})
+
+	// https://docraptor.com/documentation
+
+	log.Infof("docraptor payload: %s", payload.String())
+
+	req, err := http.NewRequest("POST", "https://docraptor.com/docs", payload)
+
+	req.Header.Add("Content-Type", "application/json")
+
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		log.WithError(err).Fatal("failed to make request")
+		return
+	}
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	svc := s3.New(cfg)
+
+	basename := path.Base(url)
+	filename := time.Now().Format("2006-01-02") + "/p-" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
+	putparams := &s3.PutObjectInput{
+		Bucket:      aws.String("dev-media-unee-t"),
+		Body:        bytes.NewReader(body),
+		Key:         aws.String(filename),
+		ACL:         s3.ObjectCannedACLPublicRead,
+		ContentType: aws.String("application/pdf; charset=UTF-8"),
+	}
+
+	s3req := svc.PutObjectRequest(putparams)
+	_, err = s3req.Send()
+
+	if err != nil {
+		log.WithError(err).Fatal("failed to put")
+		return
+	}
+
+	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + filename, err
+}
+
+func pdfcoolgen(url string) (pdfurl string, err error) {
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
 	if err != nil {
@@ -236,8 +306,9 @@ func pdfgen(url string) (pdfurl string, err error) {
 	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + filename, err
 }
 
-func handlePdfgen(w http.ResponseWriter, r *http.Request) {
+func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
+	svc := r.URL.Query().Get("svc")
 
 	if url == "" {
 		http.Error(w, "Missing URL", 400)
@@ -257,7 +328,11 @@ func handlePdfgen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url, err = pdfgen(url)
+	if svc == "raptor" {
+		url, err = pdfraptorgen(url)
+	} else {
+		url, err = pdfcoolgen(url)
+	}
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate PDF")
 		http.Error(w, err.Error(), 500)
