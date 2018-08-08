@@ -28,11 +28,17 @@ tfoot { color: white; background-color: #0099BC; }
 
 footer { flow: static(footer); }
 
+#reference {
+  flow: static(reference-html);
+}
+
 @page {
 	size: A4;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
 	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
 	@top-right { content: "Date: {{ .Date }}"; }
+	@top-left { content: flow(reference-html); }
+
 	@bottom { content: flow(footer); }
 }
 </style>
@@ -40,10 +46,12 @@ footer { flow: static(footer); }
 </head>
 <body>
 
+<span id=reference><a href="http://case.unee-t.com/i/123456">http://case.unee-t.com/i/123456</a></span>
+
 <header>
 <img src="https://s3-ap-southeast-1.amazonaws.com/prod-media-unee-t/2018-06-14/unee-t_logo_email.png">
 <h1>Unit Inspection Report</h1>
-<p>Handover of unit - {{ .Unit.Name }}</p>
+<p>Handover of unit - {{ .Unit.Information.Name }}</p>
 </header>
 
 <footer>
@@ -80,28 +88,19 @@ footer { flow: static(footer); }
 <h2>Unit Information</h2>
 <dl>
 	<dt>Unit Name</dt>
-	<dd>{{ .Unit.Name }}</dd>
-
+	<dd>{{ .Unit.Information.Name }}</dd>
 	<dt>Unit Type</dt>
 	<dd>{{ .Unit.Information.Type }}</dd>
-
 	<dt>Address</dt>
 	<dd>{{ .Unit.Information.Address }}</dd>
-
 	<dt>Zip/Postal Code</dt>
 	<dd>{{ .Unit.Information.Postcode }}</dd>
-
 	<dt>State</dt>
 	<dd>{{ .Unit.Information.State }}</dd>
-
 	<dt>Country</dt>
 	<dd>{{ .Unit.Information.Country }}</dd>
-
 	<dt>Unit Description</dt>
 	<dd>{{ .Unit.Information.Description }}</dd>
-
-	<dt>Additional Comments</dt>
-	<dd>{{ .Unit.Information.Comments }}</dd>
 </dl>
 
 <!-- Images go here -->

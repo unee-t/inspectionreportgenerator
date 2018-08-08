@@ -42,13 +42,7 @@ type Case struct {
 	Details  string
 }
 
-type Item struct {
-	Name        string
-	Image       template.URL
-	Description string
-}
-
-type Information struct {
+type Information struct { // How to see object in Mongo ?
 	Name        string
 	Type        string
 	Address     string
@@ -57,18 +51,31 @@ type Information struct {
 	State       string
 	Country     string
 	Description string
-	Comments    string
 }
 
-type Unit struct {
+type Unit struct { // Not a bug, actually a Product in Bugzilla
+	Information Information // Stored in Mongo
+}
+
+type Item struct {
 	Name        string
-	Information Information
+	Image       []template.URL
+	Description string
+	// Not needed right now
+	// Cases       []Case // TODO: not sure what this looks like in the published report
+}
+
+type Report struct {
+	Name        string
+	Description string
 	Images      []template.URL
 	Cases       []Case
 	Inventory   []Item
+	Rooms       []Room
+	Comments    string
 }
 
-type Room struct { // Similar to Unit, except no information
+type Room struct {
 	Name        string
 	Description string
 	Images      []template.URL
@@ -80,7 +87,7 @@ type InspectionReport struct {
 	Date       time.Time
 	Signatures []Signature
 	Unit       Unit
-	Rooms      []Room
+	Report     Report
 }
 
 func main() {
@@ -140,7 +147,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		State:       "California",
 		Country:     "USA",
 		Description: "Blue house with a front porch. Parking is not allowed in the driveway",
-		Comments:    "Major renovation to the common space have been done to the unit 4 months ago. Contractor company: Speedworks Pte Ltd.",
 	}
 
 	signoff.Date = time.Now()
@@ -171,7 +177,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var b bytes.Buffer
-	signoff.Unit.Name = "20 Maple Avenue, Unit 01-02"
 	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
 	if err != nil {
 		log.WithError(err).Fatal("failed to execute template signoff")
