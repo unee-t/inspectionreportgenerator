@@ -57,14 +57,15 @@ type Information struct {
 	State       string
 	Country     string
 	Description string
+	Comments    string
 }
 
 type Unit struct {
-	Name       string
-	Infomation Information
-	Images     []template.URL
-	Cases      []Case
-	Inventory  []Item
+	Name        string
+	Information Information
+	Images      []template.URL
+	Cases       []Case
+	Inventory   []Item
 }
 
 type Room struct { // Similar to Unit, except no information
@@ -129,6 +130,19 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	signoff := new(InspectionReport)
+
+	signoff.Unit.Information = Information{
+		Name:        "Unit 01-02",
+		Type:        "Apartment/Flat",
+		Address:     "20 Maple Avenue",
+		Postcode:    "90731",
+		City:        "San Pedro",
+		State:       "California",
+		Country:     "USA",
+		Description: "Blue house with a front porch. Parking is not allowed in the driveway",
+		Comments:    "Major renovation to the common space have been done to the unit 4 months ago. Contractor company: Speedworks Pte Ltd.",
+	}
+
 	signoff.Date = time.Now()
 	decoder := schema.NewDecoder()
 	decoder.IgnoreUnknownKeys(true)
