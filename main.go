@@ -30,13 +30,56 @@ import (
 )
 
 type Signature struct {
-	Name    string
-	DataURI template.URL
+	Name    string       // Who
+	DataURI template.URL // What: Graphic signature
 }
 
-type Signoff struct {
+type Case struct {
+	Title    string
+	Images   []template.URL
+	Category string
+	Status   string
+	Details  string
+}
+
+type Item struct {
+	Name        string
+	Image       template.URL
+	Description string
+}
+
+type Information struct {
+	Name        string
+	Type        string
+	Address     string
+	Postcode    string
+	City        string
+	State       string
+	Country     string
+	Description string
+}
+
+type Unit struct {
+	Name       string
+	Infomation Information
+	Images     []template.URL
+	Cases      []Case
+	Inventory  []Item
+}
+
+type Room struct { // Similar to Unit, except no information
+	Name        string
+	Description string
+	Images      []template.URL
+	Cases       []Case
+	Inventory   []Item
+}
+
+type InspectionReport struct {
+	Date       time.Time
 	Signatures []Signature
-	Unitname   string
+	Unit       Unit
+	Rooms      []Room
 }
 
 func main() {
@@ -85,7 +128,8 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	signoff := new(Signoff)
+	signoff := new(InspectionReport)
+	signoff.Date = time.Now()
 	decoder := schema.NewDecoder()
 	decoder.IgnoreUnknownKeys(true)
 	err = decoder.Decode(signoff, r.PostForm)
@@ -113,7 +157,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var b bytes.Buffer
-	signoff.Unitname = "20 Maple Avenue, Unit 01-02"
+	signoff.Unit.Name = "20 Maple Avenue, Unit 01-02"
 	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
 	if err != nil {
 		log.WithError(err).Fatal("failed to execute template signoff")
