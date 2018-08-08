@@ -12,6 +12,7 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,7 +31,8 @@ import (
 )
 
 type Signature struct {
-	Name    string       // Who
+	Name    string // Who
+	Role    string
 	DataURI template.URL // What: Graphic signature
 }
 
@@ -66,7 +68,7 @@ type Item struct {
 }
 
 type Report struct {
-	Name        string
+	Name        string // Handover of unit – 20 Maple Avenue, Unit 01-02
 	Description string
 	Images      []template.URL
 	Cases       []Case
@@ -84,6 +86,7 @@ type Room struct {
 }
 
 type InspectionReport struct {
+	Id         string
 	Date       time.Time
 	Signatures []Signature
 	Unit       Unit
@@ -136,23 +139,35 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	signoff := new(InspectionReport)
-
-	signoff.Unit.Information = Information{
-		Name:        "Unit 01-02",
-		Type:        "Apartment/Flat",
-		Address:     "20 Maple Avenue",
-		Postcode:    "90731",
-		City:        "San Pedro",
-		State:       "California",
-		Country:     "USA",
-		Description: "Blue house with a front porch. Parking is not allowed in the driveway",
+	signoff := InspectionReport{
+		Id:   "12345678",
+		Date: time.Now(),
+		Unit: Unit{
+			Information: Information{
+				Name:        "Unit 01-02",
+				Type:        "Apartment/Flat",
+				Address:     "20 Maple Avenue",
+				Postcode:    "90731",
+				City:        "San Pedro",
+				State:       "California",
+				Country:     "USA",
+				Description: "Blue house with a front porch. Parking is not allowed in the driveway",
+			},
+		},
+		Report: Report{
+			Name:        "Foobar",
+			Description: "",
+			Images:      nil,
+			Cases:       nil,
+			Inventory:   nil,
+			Rooms:       nil,
+			Comments:    "",
+		},
 	}
 
-	signoff.Date = time.Now()
 	decoder := schema.NewDecoder()
 	decoder.IgnoreUnknownKeys(true)
-	err = decoder.Decode(signoff, r.PostForm)
+	err = decoder.Decode(&signoff, r.PostForm)
 
 	if err != nil {
 		log.WithError(err).Fatal("failed to decode form")
@@ -169,7 +184,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	reg, _ := regexp.Compile("[^a-z]+")
 	filename = reg.ReplaceAllString(filename, "") + ".html"
 
-	t, err := template.New("").ParseFiles("templates/signoff.html")
+	t, err := template.New("").Funcs(template.FuncMap{"formatDate": formatDate}).ParseFiles("templates/signoff.html")
 	if err != nil {
 		log.WithError(err).Fatal("failed to parse signoff.html")
 		http.Error(w, err.Error(), 500)
@@ -407,4 +422,13 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 	}{
 		url,
 	})
+}
+
+func formatDate(d time.Time) string {
+	day := strconv.Itoa(d.Day())
+	year := strconv.Itoa(d.Year())
+	month := d.Month().String()
+
+	output := month + " " + day + ", " + year
+	return output
 }
