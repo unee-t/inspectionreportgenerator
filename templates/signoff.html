@@ -21,10 +21,20 @@ html { font-family: 'Roboto', sans-serif; }
 	body { padding: 7vmin; }
 }
 
+@media screen {
+	#reference { display: none; }
+}
+
 table { border-spacing: 0; background-color:rgba(217, 217, 217, 0.18);   }
-h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; }
-h2 { background-color:rgba(0, 153, 188, 0.12); }
+h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; color: #4D676E; font-size: 8px; font-weight: bold; }
+h2 { background-color:rgba(0, 153, 188, 0.12); font-size: 11px; padding: 0.7em; font-family: 'Roboto Black'; }
 tfoot { color: white; background-color: #0099BC; }
+
+dt {
+    display: block;
+    float: left;
+    min-width: 100px;
+}
 
 footer { flow: static(footer, start); }
 
