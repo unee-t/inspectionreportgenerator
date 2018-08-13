@@ -162,7 +162,15 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 				"https://loremflickr.com/320/240/smallhouse",
 				"https://loremflickr.com/320/240/bighouse",
 			},
-			Cases: nil,
+			Cases: []Case{{
+				Title: "Cracks on Ceiling",
+				Images: []template.URL{
+					"https://loremflickr.com/320/240/ceilingcrack",
+				},
+				Category: "Reference",
+				Status:   "Confirmed",
+				Details:  "Worse over time and rain is sometimes seen to be leaking when it rains.",
+			}},
 			Inventory: []Item{{
 				Name:        "Ikea Ivar Shelf",
 				Images:      []template.URL{"https://loremflickr.com/320/240/ivar"},

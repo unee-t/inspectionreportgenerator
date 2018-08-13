@@ -89,6 +89,27 @@ footer { flow: static(footer, start); }
 
 <section>
 <h3>Reported issues with the unit</h3>
+
+{{ range .Report.Cases }}
+<h4>{{ .Title }}</h4>
+{{ range .Images }}
+<img src="{{ . }}">
+{{ end }}
+
+<dl>
+	<dt>Category</dt>
+	<dd>{{ .Category }}</dd>
+	<dt>Status</dt>
+	<dd>{{ .Status }}</dd>
+	<dt>Details</dt>
+	<dd>{{ .Details }}</dd>
+</dl>
+
+
+
+{{ end }}
+
+
 </section>
 
 <section>
