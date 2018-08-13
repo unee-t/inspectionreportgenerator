@@ -36,11 +36,16 @@ dt {
     min-width: 100px;
 }
 
-footer { flow: static(footer, start); }
+footer { 
+	flow: static(footer, start);
+	border: thin dotted magenta; /* for debugging */
+}
 
 #reference {
   flow: static(reference-html);
 }
+
+header img { float: left }
 
 @page {
 	size: A4;
@@ -51,6 +56,9 @@ footer { flow: static(footer, start); }
 
 	@bottom { content: flow(footer); }
 }
+
+#signatures { border: thin solid black; }
+
 </style>
 
 </head>
@@ -120,7 +128,6 @@ footer { flow: static(footer, start); }
 <h4>{{ .Name }}</h4>
 <p>{{ .Description }}</p>
 {{ end }}
-
 </section>
 
 </article>
@@ -128,10 +135,50 @@ footer { flow: static(footer, start); }
 {{ range $index, $value := .Report.Rooms }}
 <article>
 <h2>Room {{ $index }} - {{ $value.Name }}</h2>
+
+
+{{ if $value.Cases }}
+<h3>Reported issues with the {{ $value.Name }}</h3>
+
+{{ range $value.Cases }}
+<h4>{{ .Title }}</h4>
+{{ range .Images }}
+<img src="{{ . }}">
+{{ end }}
+
+<dl>
+	<dt>Category</dt>
+	<dd>{{ .Category }}</dd>
+	<dt>Status</dt>
+	<dd>{{ .Status }}</dd>
+	<dt>Details</dt>
+	<dd>{{ .Details }}</dd>
+</dl>
+{{ end }}
+
+</section>
+{{ end }}
+
+{{ if $value.Inventory }}
+<section>
+<h3>Inventory for {{ $value.Name }}</h3>
+
+{{ range $value.Inventory }}
+{{ range .Images }}
+<img src="{{ . }}">
+{{ end }}
+
+<h4>{{ .Name }}</h4>
+<p>{{ .Description }}</p>
+{{ end }}
+</section>
+
 </article>
+{{ end }}
 {{ end }}
 
 <footer>
+<section id="signatures">
 <ul>
 {{ range .Signatures }}
 <li>{{ .Name }}
@@ -139,6 +186,7 @@ footer { flow: static(footer, start); }
 </li>
 {{ end }}
 </ul>
+</section>
 
 <table>
 <thead><tr><th>Smarter way to manage issues</th><th>Available everywhere</th><th></th></tr></thead>

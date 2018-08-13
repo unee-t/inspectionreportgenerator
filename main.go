@@ -156,7 +156,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 		Report: Report{
-			Name: "Foobar",
+			Name: "20 Maple Avenue, Unit 01-02",
 			Images: []template.URL{
 				"https://loremflickr.com/320/240/house",
 				"https://loremflickr.com/320/240/smallhouse",
