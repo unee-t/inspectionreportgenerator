@@ -83,7 +83,9 @@ footer { flow: static(footer, start); }
 	<dd>{{ .Unit.Information.Description }}</dd>
 </dl>
 
-<!-- Images go here -->
+{{ range .Report.Images }}
+<img src="{{ . }}">
+{{ end }}
 
 <section>
 <h3>Reported issues with the unit</h3>
@@ -91,6 +93,17 @@ footer { flow: static(footer, start); }
 
 <section>
 <h3>Inventory for unit</h3>
+
+{{ range .Report.Inventory }}
+
+{{ range .Images }}
+<img src="{{ . }}">
+{{ end }}
+
+<h4>{{ .Name }}</h4>
+<p>{{ .Description }}</p>
+{{ end }}
+
 </section>
 
 </article>

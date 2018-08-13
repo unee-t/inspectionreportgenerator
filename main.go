@@ -61,7 +61,7 @@ type Unit struct { // Not a bug, actually a Product in Bugzilla
 
 type Item struct {
 	Name        string
-	Image       []template.URL
+	Images      []template.URL
 	Description string
 	// Not needed right now
 	// Cases       []Case // TODO: not sure what this looks like in the published report
@@ -140,8 +140,9 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	signoff := InspectionReport{
-		Id:   "12345678",
-		Date: time.Now(),
+		Id:         "12345678",
+		Date:       time.Now(),
+		Signatures: nil,
 		Unit: Unit{
 			Information: Information{
 				Name:        "Unit 01-02",
@@ -155,13 +156,21 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 		Report: Report{
-			Name:        "Foobar",
-			Description: "",
-			Images:      nil,
-			Cases:       nil,
-			Inventory:   nil,
-			Rooms:       nil,
-			Comments:    "",
+			Name: "Foobar",
+			Images: []template.URL{
+				"https://loremflickr.com/320/240/house",
+				"https://loremflickr.com/320/240/smallhouse",
+				"https://loremflickr.com/320/240/bighouse",
+			},
+			Cases: nil,
+			Inventory: []Item{{
+				Name:        "Ikea Ivar Shelf",
+				Images:      []template.URL{"https://loremflickr.com/320/240/ivar"},
+				Description: "1 in acceptable condition",
+			},
+			},
+			Rooms:    nil,
+			Comments: "A comment pertaining to the report itself.",
 		},
 	}
 
