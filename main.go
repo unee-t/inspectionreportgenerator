@@ -306,7 +306,7 @@ func pdfraptorgen(url string) (pdfurl string, err error) {
 	enc.SetIndent("", "    ")
 	enc.SetEscapeHTML(false)
 	enc.Encode(struct {
-		Url  string `json:"document_url"`
+		URL  string `json:"document_url"`
 		User string `json:"user_credentials"`
 		Test bool   `json:"test"`
 	}{

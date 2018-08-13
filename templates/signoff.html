@@ -125,9 +125,9 @@ footer { flow: static(footer, start); }
 
 </article>
 
-{{ range  .Report.Rooms }}
+{{ range $index, $value := .Report.Rooms }}
 <article>
-<h2>Room - {{ .Name }}</h2>
+<h2>Room {{ $index }} - {{ $value.Name }}</h2>
 </article>
 {{ end }}
 
