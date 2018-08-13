@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,minimum-scale=1">
 <title>Unit Inspection Report</title>
 <style>
+body,html{
+	font-size: 8px;
+}
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
@@ -13,6 +17,8 @@
 }
 
 html { font-family: 'Roboto', sans-serif; }
+dl, .items { column-count: 2; }
+.item { background-color: green; }
 
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
@@ -26,7 +32,7 @@ html { font-family: 'Roboto', sans-serif; }
 }
 
 table { border-spacing: 0; background-color:rgba(217, 217, 217, 0.18);   }
-h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; color: #4D676E; font-size: 8px; font-weight: bold; }
+h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; color: #4D676E; font-size: 10px; font-weight: bold; }
 h2 { background-color:rgba(0, 153, 188, 0.12); font-size: 11px; padding: 0.7em; font-weight: 900; }
 tfoot { color: white; background-color: #0099BC; }
 
@@ -43,6 +49,8 @@ footer {
 
 #reference {
   flow: static(reference-html);
+  font-size: 8px;
+  text-align: right;
 }
 
 header img { float: left }
@@ -55,7 +63,7 @@ header img { float: left }
 	@bottom { content: flow(footer); }
 }
 
-#signatures { border: thin solid black; }
+footer ul { border: thin solid black; }
 
 </style>
 
@@ -65,7 +73,7 @@ header img { float: left }
 <span id=reference>Reference: <a href="http://case.unee-t.com/i/{{ .Id }}">{{ .Id }}</a><br>Created on: {{ formatDate .Date }}</span>
 
 <header>
-<img src="https://media.dev.unee-t.com/2018-08-08/logo_unee-t.png">
+<img alt="Logo" src="https://media.dev.unee-t.com/2018-08-08/logo_unee-t.png">
 <h1>Unit Inspection Report</h1>
 <p>Handover of unit - {{ .Report.Name }}</p>
 </header>
@@ -91,8 +99,11 @@ header img { float: left }
 </dl>
 
 {{ range .Report.Images }}
-<img src="{{ . }}">
+<img alt="" src="{{ . }}">
 {{ end }}
+
+<p>{{ .Report.Comments }}</p>
+
 
 <section>
 <h3>Reported issues with the unit</h3>
@@ -100,7 +111,7 @@ header img { float: left }
 {{ range .Report.Cases }}
 <h4>{{ .Title }}</h4>
 {{ range .Images }}
-<img src="{{ . }}">
+<img alt="" src="{{ . }}">
 {{ end }}
 
 <dl>
@@ -115,17 +126,17 @@ header img { float: left }
 
 </section>
 
-<section>
 <h3>Inventory for unit</h3>
-
+<section class="items">
 {{ range .Report.Inventory }}
-
+<div class="item">
 {{ range .Images }}
-<img src="{{ . }}">
+<img alt="" src="{{ . }}">
 {{ end }}
 
 <h4>{{ .Name }}</h4>
 <p>{{ .Description }}</p>
+</div>
 {{ end }}
 </section>
 
@@ -135,14 +146,13 @@ header img { float: left }
 <article>
 <h2>Room {{ $index }} - {{ $value.Name }}</h2>
 
-
 {{ if $value.Cases }}
+<section>
 <h3>Reported issues with the {{ $value.Name }}</h3>
-
 {{ range $value.Cases }}
 <h4>{{ .Title }}</h4>
 {{ range .Images }}
-<img src="{{ . }}">
+<img alt="" src="{{ . }}">
 {{ end }}
 
 <dl>
@@ -154,46 +164,43 @@ header img { float: left }
 	<dd>{{ .Details }}</dd>
 </dl>
 {{ end }}
-
 </section>
 {{ end }}
 
 {{ if $value.Inventory }}
-<section>
 <h3>Inventory for {{ $value.Name }}</h3>
-
+<section class="items">
 {{ range $value.Inventory }}
+<div class="item">
 {{ range .Images }}
-<img src="{{ . }}">
+<img alt="" src="{{ . }}">
 {{ end }}
 
 <h4>{{ .Name }}</h4>
 <p>{{ .Description }}</p>
+</div>
 {{ end }}
 </section>
-
-</article>
 {{ end }}
+</article>
 {{ end }}
 
 <footer>
-<section id="signatures">
 <ul>
 {{ range .Signatures }}
 <li>{{ .Name }}
-<img src="{{ .DataURI }}" />
+<img alt="{{ .Name }}'s signature" src="{{ .DataURI }}" />
 </li>
 {{ end }}
 </ul>
-</section>
 
 <table>
 <thead><tr><th>Smarter way to manage issues</th><th>Available everywhere</th><th></th></tr></thead>
 
 <tbody>
 <tr>
-<td><img src="https://media.dev.unee-t.com/2018-08-08/ico_smarterway.png">Easily capture issues, communicate and agree on the next steps with everyone on the same page</td>
-<td><img src="https://media.dev.unee-t.com/2018-08-08/ico_available_anywhere.png">Unee-T is a cloud based application. Access your cases on your devices whenever and wherever you need them</td>
+<td><img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_smarterway.png">Easily capture issues, communicate and agree on the next steps with everyone on the same page</td>
+<td><img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_available_anywhere.png">Unee-T is a cloud based application. Access your cases on your devices whenever and wherever you need them</td>
 <td><strong>Get your FREE account at unee-t.com</strong></td>
 </tr>
 </tbody>

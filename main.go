@@ -173,7 +173,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			}},
 			Inventory: []Item{{
 				Name:        "Ikea Ivar Shelf",
-				Images:      []template.URL{"https://loremflickr.com/320/240/ivar"},
+				Images:      []template.URL{"https://loremflickr.com/320/240/ivar", "https://loremflickr.com/320/240/shelf", "https://loremflickr.com/320/240/shelfcupboard"},
 				Description: "1 in acceptable condition",
 			},
 			},
@@ -185,7 +185,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 					Cases: []Case{
 						{
 							Title:    "Light is not working",
-							Images:   []template.URL{"https://loremflickr.com/320/240/brokenlight"},
+							Images:   []template.URL{"https://loremflickr.com/240/240/brokenlight", "https://loremflickr.com/240/240/lightdark", "https://loremflickr.com/240/240/dark"},
 							Category: "Repair",
 							Status:   "Confirmed",
 							Details:  "Lights are unable to turn on after change the light bulb",
@@ -223,7 +223,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 						},
 						{
 							Name:        "Bekant chairs",
-							Images:      []template.URL{"https://loremflickr.com/320/240/chair"},
+							Images:      []template.URL{"https://loremflickr.com/320/240/chair", "https://loremflickr.com/240/240/anotherchair"},
 							Description: "12 in mint condition.",
 						},
 					},
