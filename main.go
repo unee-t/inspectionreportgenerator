@@ -69,6 +69,7 @@ type Item struct {
 
 type Report struct {
 	Name        string // Handover of unit – 20 Maple Avenue, Unit 01-02
+	Creator     string // email from bugzilla
 	Description string
 	Images      []template.URL
 	Cases       []Case
@@ -182,8 +183,23 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 					Name:        "Big Meeting Room",
 					Description: "300 sqft with built-in cabinets, air-con and WiFi",
 					Images:      nil,
-					Cases:       nil,
-					Inventory:   nil,
+					Cases: []Case{
+						{
+							Title:    "Light is not working",
+							Images:   []template.URL{"https://loremflickr.com/320/240/brokenlight"},
+							Category: "Repair",
+							Status:   "Confirmed",
+							Details:  "Lights are unable to turn on after change the light bulb",
+						},
+						{
+							Title:    "Floor stain and the mould seems to smell",
+							Images:   []template.URL{"https://loremflickr.com/320/240/floormould"},
+							Category: "Complex project",
+							Status:   "Reopened",
+							Details:  "Horrible floor statins are appearing due to moisture over time. There is a bad smell.",
+						},
+					},
+					Inventory: nil,
 				},
 				{
 					Name:        "Pantry",
