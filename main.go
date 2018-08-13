@@ -177,7 +177,43 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 				Description: "1 in acceptable condition",
 			},
 			},
-			Rooms:    nil,
+			Rooms: []Room{
+				{
+					Name:        "Big Meeting Room",
+					Description: "300 sqft with built-in cabinets, air-con and WiFi",
+					Images:      nil,
+					Cases:       nil,
+					Inventory:   nil,
+				},
+				{
+					Name:        "Pantry",
+					Description: "800 sqft, high with built-in cabinets, air-con and WiFi",
+					Images:      nil,
+					Cases:       nil,
+					Inventory: []Item{
+						{
+							Name:        "LG Electronics fridge",
+							Images:      []template.URL{"https://loremflickr.com/320/240/fridge"},
+							Description: "1 in acceptable working condition",
+						},
+						{
+							Name:        "Solid Wood long table",
+							Images:      []template.URL{"https://loremflickr.com/320/240/table"},
+							Description: "1 in very bad condition. Table is baldy chipped and edges are wearing out.",
+						},
+						{
+							Name:        "Pantry cabinet",
+							Images:      []template.URL{"https://loremflickr.com/320/240/cabinet"},
+							Description: "1 in good condition. Well maintained.",
+						},
+						{
+							Name:        "Bekant chairs",
+							Images:      []template.URL{"https://loremflickr.com/320/240/chair"},
+							Description: "12 in mint condition.",
+						},
+					},
+				},
+			},
 			Comments: "A comment pertaining to the report itself.",
 		},
 	}
