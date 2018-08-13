@@ -12,7 +12,6 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -120,7 +119,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Robots-Tag", "none")
 	}
 
-	t := template.Must(template.New("").ParseGlob("templates/*.html"))
+	t := template.Must(template.New("").ParseFiles("templates/index.html"))
 	err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		csrf.TemplateTag: csrf.TemplateField(r),
 		"Stage":          os.Getenv("UP_STAGE"),
@@ -253,7 +252,10 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	reg, _ := regexp.Compile("[^a-z]+")
 	filename = reg.ReplaceAllString(filename, "") + ".html"
 
-	t, err := template.New("").Funcs(template.FuncMap{"formatDate": formatDate}).ParseFiles("templates/signoff.html")
+	t, err := template.New("").Funcs(template.FuncMap{
+		"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+	}).ParseFiles("templates/signoff.html")
+
 	if err != nil {
 		log.WithError(err).Fatal("failed to parse signoff.html")
 		http.Error(w, err.Error(), 500)
@@ -479,13 +481,4 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 	}{
 		url,
 	})
-}
-
-func formatDate(d time.Time) string {
-	day := strconv.Itoa(d.Day())
-	year := strconv.Itoa(d.Year())
-	month := d.Month().String()
-
-	output := month + " " + day + ", " + year
-	return output
 }

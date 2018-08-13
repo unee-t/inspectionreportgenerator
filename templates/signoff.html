@@ -33,10 +33,10 @@ tfoot { color: white; background-color: #0099BC; }
 dt {
     display: block;
     float: left;
-    min-width: 100px;
+    min-width: 200px;
 }
 
-footer { 
+footer {
 	flow: static(footer, start);
 	border: thin dotted magenta; /* for debugging */
 }
@@ -51,9 +51,7 @@ header img { float: left }
 	size: A4;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
 	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
-	@top-right { content: "Date: {{ .Date }}"; }
-	@top-left { content: flow(reference-html); }
-
+	@top-right { content: flow(reference-html); }
 	@bottom { content: flow(footer); }
 }
 
@@ -64,7 +62,7 @@ header img { float: left }
 </head>
 <body>
 
-<span id=reference><a href="http://case.unee-t.com/i/123456">http://case.unee-t.com/i/123456</a></span>
+<span id=reference>Reference: <a href="http://case.unee-t.com/i/{{ .Id }}">{{ .Id }}</a><br>Created on: {{ formatDate .Date }}</span>
 
 <header>
 <img src="https://media.dev.unee-t.com/2018-08-08/logo_unee-t.png">
