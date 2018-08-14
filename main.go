@@ -29,12 +29,14 @@ import (
 	"github.com/unee-t/env"
 )
 
+// Signature holds the wet signature
 type Signature struct {
 	Name    string // Who
 	Role    string
 	DataURI template.URL // What: Graphic signature
 }
 
+// Case summarises the cases
 type Case struct {
 	Title    string
 	Images   []template.URL
@@ -43,6 +45,7 @@ type Case struct {
 	Details  string
 }
 
+// Information pertaining to the Unit
 type Information struct { // How to see object in Mongo ?
 	Name        string
 	Type        string
@@ -54,10 +57,12 @@ type Information struct { // How to see object in Mongo ?
 	Description string
 }
 
-type Unit struct { // Not a bug, actually a Product in Bugzilla
+// Unit is actually a Product in Bugzilla
+type Unit struct {
 	Information Information // Stored in Mongo
 }
 
+// Item is part of an Inventory
 type Item struct {
 	Name        string
 	Images      []template.URL
@@ -66,6 +71,7 @@ type Item struct {
 	// Cases       []Case // TODO: not sure what this looks like in the published report
 }
 
+// Report for the Unit and rooms of the unit
 type Report struct {
 	Name        string // Handover of unit – 20 Maple Avenue, Unit 01-02
 	Creator     string // email from bugzilla
@@ -77,6 +83,7 @@ type Report struct {
 	Comments    string
 }
 
+// Room each can have issues (cases) and an inventory
 type Room struct {
 	Name        string
 	Description string
@@ -85,8 +92,9 @@ type Room struct {
 	Inventory   []Item
 }
 
+// InspectionReport is the top level structure that holds a report
 type InspectionReport struct {
-	Id         string
+	ID         string
 	Date       time.Time
 	Signatures []Signature
 	Unit       Unit
@@ -140,7 +148,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	signoff := InspectionReport{
-		Id:         "12345678",
+		ID:         "12345678",
 		Date:       time.Now(),
 		Signatures: nil,
 		Unit: Unit{
@@ -158,14 +166,13 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		Report: Report{
 			Name: "20 Maple Avenue, Unit 01-02",
 			Images: []template.URL{
-				"https://loremflickr.com/320/240/house",
-				"https://loremflickr.com/320/240/smallhouse",
-				"https://loremflickr.com/320/240/bighouse",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
 			},
 			Cases: []Case{{
 				Title: "Cracks on Ceiling",
 				Images: []template.URL{
-					"https://loremflickr.com/320/240/ceilingcrack",
+					"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/inspection_report.jpg",
 				},
 				Category: "Reference",
 				Status:   "Confirmed",
@@ -173,7 +180,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			}},
 			Inventory: []Item{{
 				Name:        "Ikea Ivar Shelf",
-				Images:      []template.URL{"https://loremflickr.com/320/240/ivar", "https://loremflickr.com/320/240/shelf", "https://loremflickr.com/320/240/shelfcupboard"},
+				Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/images.jpg"},
 				Description: "1 in acceptable condition",
 			},
 			},
@@ -185,14 +192,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 					Cases: []Case{
 						{
 							Title:    "Light is not working",
-							Images:   []template.URL{"https://loremflickr.com/240/240/brokenlight", "https://loremflickr.com/240/240/lightdark", "https://loremflickr.com/240/240/dark"},
+							Images:   []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg", "http://res.cloudinary.com/unee-t-staging/image/upload/e_cartoonify/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg"},
 							Category: "Repair",
 							Status:   "Confirmed",
 							Details:  "Lights are unable to turn on after change the light bulb",
 						},
 						{
 							Title:    "Floor stain and the mould seems to smell",
-							Images:   []template.URL{"https://loremflickr.com/320/240/floormould"},
+							Images:   []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/wood_floor_stain.jpg"},
 							Category: "Complex project",
 							Status:   "Reopened",
 							Details:  "Horrible floor statins are appearing due to moisture over time. There is a bad smell.",
@@ -203,27 +210,27 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 				{
 					Name:        "Pantry",
 					Description: "800 sqft, high with built-in cabinets, air-con and WiFi",
-					Images:      nil,
+					Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry.jpg"},
 					Cases:       nil,
 					Inventory: []Item{
 						{
 							Name:        "LG Electronics fridge",
-							Images:      []template.URL{"https://loremflickr.com/320/240/fridge"},
+							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_fridge.jpg"},
 							Description: "1 in acceptable working condition",
 						},
 						{
 							Name:        "Solid Wood long table",
-							Images:      []template.URL{"https://loremflickr.com/320/240/table"},
+							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_02.jpg"},
 							Description: "1 in very bad condition. Table is baldy chipped and edges are wearing out.",
 						},
 						{
 							Name:        "Pantry cabinet",
-							Images:      []template.URL{"https://loremflickr.com/320/240/cabinet"},
+							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_microwave.jpg"},
 							Description: "1 in good condition. Well maintained.",
 						},
 						{
 							Name:        "Bekant chairs",
-							Images:      []template.URL{"https://loremflickr.com/320/240/chair", "https://loremflickr.com/240/240/anotherchair"},
+							Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
 							Description: "12 in mint condition.",
 						},
 					},
@@ -254,6 +261,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	t, err := template.New("").Funcs(template.FuncMap{
 		"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+		"increment":  func(i int) int { return i + 1 },
 	}).ParseFiles("templates/signoff.html")
 
 	if err != nil {
@@ -330,7 +338,7 @@ func pdfraptorgen(url string) (pdfurl string, err error) {
 	}{
 		url,
 		e.GetSecret("RAPTORAPIKEY"),
-		true,
+		false,
 	})
 
 	// https://docraptor.com/documentation
