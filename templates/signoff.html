@@ -9,6 +9,8 @@ body,html{
 	font-size: 8px;
 }
 
+.signature { width: 20%; float: left; border: 1px solid black; }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
@@ -16,9 +18,18 @@ body,html{
   src: local('Roboto Regular'), local('Roboto-Regular'), url(http://themes.googleusercontent.com/static/fonts/roboto/v10/2UX7WLTfW3W8TclTUvlFyQ.woff) format('woff');
 }
 
+table.footer { width: 100%; }
+
 html { font-family: 'Roboto', sans-serif; }
 dl, .items { column-count: 2; }
-.item { background-color: green; }
+.item { background-color: pink; }
+
+.item img {
+  object-fit: cover;
+  width:230px;
+  height:230px;
+}
+
 
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
@@ -58,6 +69,8 @@ header img { float: left }
 @page {
 	size: A4;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
+	margin-top: 120px; /* header height */
+	margin-bottom: 480px; /* footer height */
 	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
 	@top-right { content: flow(reference-html); }
 	@bottom { content: flow(footer); }
@@ -186,15 +199,16 @@ footer ul { border: thin solid black; }
 {{ end }}
 
 <footer>
-<ul>
 {{ range .Signatures }}
-<li>{{ .Name }}
-<img alt="{{ .Name }}'s signature" src="{{ .DataURI }}" />
-</li>
+<table class="signature">
+<tr><td>People involved</td></tr>
+<tr><td><strong>{{ .Name }}</strong></td></tr>
+<tr><td>{{ .Role }}</td></tr>
+<tr><td><img alt="{{ .Name }}'s signature" src="{{ .DataURI }}" /></tr>
+</table>
 {{ end }}
-</ul>
 
-<table>
+<table class="footer">
 <thead><tr><th>Smarter way to manage issues</th><th>Available everywhere</th><th></th></tr></thead>
 
 <tbody>
