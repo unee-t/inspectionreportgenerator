@@ -17,6 +17,8 @@ table.footer { width: 100%; }
 table.signature { width: 20%; }
 table.signature img { height: 50px; }
 
+.signatures p { text-transform: uppercase; }
+
 html { font-family: 'Roboto', sans-serif; }
 dl, .items { column-count: 2; }
 .item { background-color: #F5F5F5; }
@@ -27,9 +29,7 @@ article img {
   height:230px;
 }
 
-
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
-
 
 @media screen and (min-width: 800px) {
 	body { padding: 7vmin; }
@@ -229,7 +229,7 @@ footer ul { border: thin solid black; }
 
 <section id="signatures">
 <div class="signatures">
-<p>Created by</p>
+<p>Report created by</p>
 {{ range $index, $value := .Signatures }}
 {{if eq $index 0 }}
 <table class="signature">
