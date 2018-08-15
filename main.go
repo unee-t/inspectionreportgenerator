@@ -33,6 +33,7 @@ import (
 type Signature struct {
 	Name    string // Who
 	Role    string
+	Email   string       // Needs to match Creator in order to be consider the report was created by
 	DataURI template.URL // What: Graphic signature
 }
 

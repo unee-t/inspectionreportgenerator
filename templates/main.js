@@ -60,7 +60,7 @@ new Vue({
         .then(pdf => this.ppdf = pdf.PDF)
     },
     async submitJson (x) {
-      console.log('Submitting JSON', this.json)
+      // console.log('Submitting JSON', this.json)
       const result = await fetch('/jsonhtmlgen', { method: 'POST',
         credentials: 'same-origin',
         headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'].value },
@@ -69,12 +69,17 @@ new Vue({
       this.html = result.HTML
       this.jsonurl = result.JSON
 
-      // fetch(`/pdfgen?url=${result.HTML}`)
-      //   .then(stream => stream.json())
-      //   .then(pdf => this.pdf = pdf.PDF)
-      // fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
-      //   .then(stream => stream.json())
-      //   .then(pdf => this.ppdf = pdf.PDF)
+      var params = new URLSearchParams(window.location.search)
+      params.set('jsonurl', this.jsonurl)
+      const path = window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + params.toString()
+      window.history.pushState({path}, '', path)
+
+      fetch(`/pdfgen?url=${result.HTML}`)
+        .then(stream => stream.json())
+        .then(pdf => this.pdf = pdf.PDF)
+      fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
+        .then(stream => stream.json())
+        .then(pdf => this.ppdf = pdf.PDF)
     },
     updateSignature (index, url) {
       Vue.set(this.signatureDataUris, index, url)

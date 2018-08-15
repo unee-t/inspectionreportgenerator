@@ -17,7 +17,7 @@ input { width: 80%; }
 <body>
 <h1>HTML to PDF test bed</h1>
 <div id="app">
-
+<h2>Via signature pad and defaults</h2>
 <label>Number of signatures required <input style="width: 3em;" min="1" max="10" type=number v-model.number="signaturesNeeded"></label>
 
 <form id="myForm" v-on:submit.prevent="submitForm">
@@ -34,6 +34,7 @@ input { width: 80%; }
 </form>
 
 <hr>
+<h2>Via Raw JSON payload</h2>
 
 <form id="jsonPayload" v-on:submit.prevent="submitJson">
 <input v-model="jsonurl">
@@ -65,7 +66,7 @@ input { width: 80%; }
 
 <ul>
 <li><a href="https://github.com/unee-t/frontend/issues/427">Implementing inspection report template</a></li>
-<li><a href="/templates/signoff.html">Template source</a></li>
+<li><a href="/templates/signoff.html">Default template source</a></li>
 <li><a href="https://github.com/unee-t/wetsignaturetopdfprototype">Source code</a></li>
 </ul>
 
