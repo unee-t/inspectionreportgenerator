@@ -11,7 +11,8 @@ body,html{
 	font-size: 8px;
 }
 
-.signatures { border: thin solid #0099BC; padding: 10px; }
+.signatures { border: thin solid #0099BC; padding: 10px; margin: 10px; }
+section#signatures { display: flex; }
 table.footer { width: 100%; }
 table.signature { width: 20%; }
 table.signature img { height: 50px; }
@@ -59,7 +60,25 @@ footer {
   text-align: right;
 }
 
-header * { display: inline; }
+header {
+  position: relative;
+}
+
+header img {
+  position: absolute;
+}
+
+header h1 {
+  font-weight: bold;
+  font-size: 21px;
+  padding-left: 50px;
+}
+
+header p {
+  font-weight: bold;
+  font-size: 16px;
+  padding-left: 50px;
+}
 
 @page {
 	size: A4;
@@ -81,7 +100,7 @@ footer ul { border: thin solid black; }
 <span id=reference>Reference: <a href="http://case.unee-t.com/i/{{ .ID }}">{{ .ID }}</a><br>Created on: {{ formatDate .Date }}</span>
 
 <header>
-<img alt="Logo" src="https://media.dev.unee-t.com/2018-08-08/logo_unee-t.png">
+<img alt="Logo" width="44" height="58" src="https://media.dev.unee-t.com/2018-08-15/logo.svg">
 <h1>Unit Inspection Report</h1>
 <p>Handover of unit - {{ .Report.Name }}</p>
 </header>
@@ -207,16 +226,34 @@ footer ul { border: thin solid black; }
 {{ end }}
 
 <footer>
+
+<section id="signatures">
 <div class="signatures">
-<p>People involved</p>
-{{ range .Signatures }}
+<p>Created by</p>
+{{ range $index, $value := .Signatures }}
+{{if eq $index 0 }}
 <table class="signature">
-<tr><td><strong>{{ .Name }}</strong></td></tr>
-<tr><td>{{ .Role }}</td></tr>
-<tr><td><img alt="{{ .Name }}'s signature" src="{{ .DataURI }}" /></tr>
+<tr><td><strong>{{ $value.Name }}</strong></td></tr>
+<tr><td>{{ $value.Role }}</td></tr>
+<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
 </table>
 {{ end }}
+{{ end }}
 </div>
+
+<div class="signatures">
+<p>People involved</p>
+{{ range $index, $value := .Signatures }}
+{{if ne $index 0 }}
+<table class="signature">
+<tr><td><strong>{{ $value.Name }}</strong></td></tr>
+<tr><td>{{ $value.Role }}</td></tr>
+<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
+</table>
+{{ end }}
+{{ end }}
+</div>
+</section>
 
 <table class="footer">
 <thead><tr><th>Smarter way to manage issues</th><th>Available everywhere</th><th></th></tr></thead>
