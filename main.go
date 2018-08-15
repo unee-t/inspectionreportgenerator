@@ -156,7 +156,7 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 	}
 
 	reg, _ := regexp.Compile("[^a-z]+")
-	filename = reg.ReplaceAllString(filename, "") + ".html"
+	filename = reg.ReplaceAllString(filename, "")
 
 	var t *template.Template
 	var b bytes.Buffer
@@ -209,11 +209,19 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	svc := s3.New(cfg)
 
-	filename = time.Now().Format("2006-01-02") + "/" + filename
+	dumpurl, err := dump(svc, filename, ir)
+	if err != nil {
+		log.WithError(err).Fatal("failed to dump")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	log.Infof("dumpurl %s", dumpurl)
+
+	htmlfilename := time.Now().Format("2006-01-02") + "/" + filename + ".html"
 	putparams := &s3.PutObjectInput{
 		Bucket:      aws.String("dev-media-unee-t"),
 		Body:        bytes.NewReader(b.Bytes()),
-		Key:         aws.String(filename),
+		Key:         aws.String(htmlfilename),
 		ACL:         s3.ObjectCannedACLPublicRead,
 		ContentType: aws.String("text/html; charset=UTF-8"),
 	}
@@ -229,8 +237,10 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, struct {
 		HTML string
+		JSON string
 	}{
-		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", filename),
+		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", htmlfilename),
+		dumpurl,
 	})
 
 }
@@ -390,6 +400,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+	log.Infof("dumpurl %s", dumpurl)
 
 	htmlfilename := time.Now().Format("2006-01-02") + "/" + filename + ".html"
 	putparams := &s3.PutObjectInput{
@@ -599,6 +610,7 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 }
 
 func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err error) {
+	log.Info("Here DUMPin")
 	dataJSON, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return "", err

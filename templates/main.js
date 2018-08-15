@@ -29,11 +29,12 @@ new Vue({
     pdf: '', // pdf.cool
     ppdf: '', // Prince PDF
     json: '',
+    jsonurl: new URL(location.href).searchParams.get('jsonurl') || '/templates/dump.json',
     // all signature urls as example
     signatureDataUris: []
   },
   mounted () {
-    fetch('/templates/dump.json').then((result) => { return result.text() })
+    fetch(this.jsonurl).then((result) => { return result.text() })
       .then((json) => { this.json = json })
   },
   methods: {
@@ -44,6 +45,12 @@ new Vue({
         body: new FormData(x.target) })
         .then((result) => { return result.json() })
       this.html = result.HTML
+      this.jsonurl = result.JSON
+
+      var params = new URLSearchParams(window.location.search)
+      params.set('jsonurl', this.jsonurl)
+      const path = window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + params.toString()
+      window.history.pushState({path}, '', path)
 
       fetch(`/pdfgen?url=${result.HTML}`)
         .then(stream => stream.json())
@@ -60,6 +67,7 @@ new Vue({
         body: this.json })
         .then((result) => { return result.json() })
       this.html = result.HTML
+      this.jsonurl = result.JSON
 
       // fetch(`/pdfgen?url=${result.HTML}`)
       //   .then(stream => stream.json())
