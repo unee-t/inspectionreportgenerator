@@ -42,7 +42,7 @@ func main() {
 	var options []csrf.Option
 
 	// If developing locally
-	options = append(options, csrf.Secure(false))
+	// options = append(options, csrf.Secure(false))
 
 	if err := http.ListenAndServe(addr,
 		csrf.Protect([]byte("32-byte-long-auth-key"), options...)(app)); err != nil {
@@ -383,7 +383,7 @@ func pdfraptorgen(url string) (pdfurl string, err error) {
 	}{
 		url,
 		e.GetSecret("RAPTORAPIKEY"),
-		false,
+		true,
 	})
 
 	// https://docraptor.com/documentation

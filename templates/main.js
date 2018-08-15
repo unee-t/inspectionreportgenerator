@@ -5,7 +5,9 @@ Vue.component('signature-pad', {
   data () {
     return {
       signaturePad: null,
-      dataUrl: null
+      dataUrl: null,
+      role: 'Management Company',
+      roles: ['Tenant', 'Owner/Landlord', 'Contractor', 'Management Company', 'Agent']
     }
   },
   mounted () {

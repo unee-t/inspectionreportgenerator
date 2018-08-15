@@ -57,6 +57,10 @@ input { width: 80%; }
 <div class="signature-pad--body">
 <canvas ref="canv"></canvas>
 <input required type=hidden v-model=dataUrl :name="'Signatures.' + (item - 1) + '.dataURI'">
+<input type="text" v-model="role" :name="'Signatures.' + (item - 1) + '.role'" list="roles">
+<datalist id="roles">
+<option v-for="role in roles">${role}</option>
+</datalist>
 </div>
 <div class="signature-pad--footer">
 <div class="description">Sign above</div>

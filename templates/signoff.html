@@ -208,9 +208,9 @@ footer ul { border: thin solid black; }
 
 <footer>
 <div class="signatures">
+<p>People involved</p>
 {{ range .Signatures }}
 <table class="signature">
-<tr><td>People involved</td></tr>
 <tr><td><strong>{{ .Name }}</strong></td></tr>
 <tr><td>{{ .Role }}</td></tr>
 <tr><td><img alt="{{ .Name }}'s signature" src="{{ .DataURI }}" /></tr>
