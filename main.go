@@ -99,7 +99,7 @@ type InspectionReport struct {
 	Signatures []Signature
 	Unit       Unit
 	Report     Report
-	Template   template.URL
+	Template   string
 }
 
 func main() {
@@ -158,22 +158,45 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 	reg, _ := regexp.Compile("[^a-z]+")
 	filename = reg.ReplaceAllString(filename, "") + ".html"
 
-	t, err := template.New("").Funcs(template.FuncMap{
-		"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
-		"increment":  func(i int) int { return i + 1 },
-	}).ParseFiles("templates/signoff.html")
-
-	if err != nil {
-		log.WithError(err).Fatal("failed to parse signoff.html")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
+	var t *template.Template
 	var b bytes.Buffer
 
-	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", ir)
+	if ir.Template == "" {
+		// Use default template
+		t, err = template.New("").Funcs(template.FuncMap{
+			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+			"increment":  func(i int) int { return i + 1 },
+		}).ParseFiles("templates/signoff.html")
+
+		if err != nil {
+			log.WithError(err).Fatal("failed to parse signoff.html")
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", ir)
+	} else {
+		resp, err := http.Get(ir.Template)
+		if err != nil {
+			log.WithError(err).Fatalf("failed to fetch %s", ir.Template)
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		defer resp.Body.Close()
+		contents, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.WithError(err).Fatalf("failed to parse %s", ir.Template)
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		tmpl, err := template.New("").Funcs(template.FuncMap{
+			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+			"increment":  func(i int) int { return i + 1 },
+		}).Parse(string(contents))
+		err = tmpl.Execute(io.Writer(&b), ir)
+	}
+
 	if err != nil {
-		log.WithError(err).Fatal("failed to execute template ir")
+		log.WithError(err).Fatal("failed to execute template")
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -331,7 +354,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	reg, _ := regexp.Compile("[^a-z]+")
-	filename = reg.ReplaceAllString(filename, "") + ".html"
+	filename = reg.ReplaceAllString(filename, "")
 
 	t, err := template.New("").Funcs(template.FuncMap{
 		"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
@@ -345,8 +368,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var b bytes.Buffer
-
-	dump(signoff)
 
 	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
 	if err != nil {
@@ -363,11 +384,18 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 	svc := s3.New(cfg)
 
-	filename = time.Now().Format("2006-01-02") + "/" + filename
+	dumpurl, err := dump(svc, filename, signoff)
+	if err != nil {
+		log.WithError(err).Fatal("failed to dump")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	htmlfilename := time.Now().Format("2006-01-02") + "/" + filename + ".html"
 	putparams := &s3.PutObjectInput{
 		Bucket:      aws.String("dev-media-unee-t"),
 		Body:        bytes.NewReader(b.Bytes()),
-		Key:         aws.String(filename),
+		Key:         aws.String(htmlfilename),
 		ACL:         s3.ObjectCannedACLPublicRead,
 		ContentType: aws.String("text/html; charset=UTF-8"),
 	}
@@ -383,8 +411,10 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, struct {
 		HTML string
+		JSON string
 	}{
-		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", filename),
+		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", htmlfilename),
+		dumpurl,
 	})
 
 }
@@ -568,11 +598,23 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func dump(data interface{}) (err error) {
+func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err error) {
 	dataJSON, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
-		return err
+		return "", err
 	}
-	err = ioutil.WriteFile("dump.json", dataJSON, 0644)
-	return err
+
+	jsonfilename := time.Now().Format("2006-01-02") + "/" + filename + ".json"
+	putparams := &s3.PutObjectInput{
+		Bucket:      aws.String("dev-media-unee-t"),
+		Body:        bytes.NewReader(dataJSON),
+		Key:         aws.String(jsonfilename),
+		ACL:         s3.ObjectCannedACLPublicRead,
+		ContentType: aws.String("application/json; charset=UTF-8"),
+	}
+
+	req := svc.PutObjectRequest(putparams)
+	_, err = req.Send()
+
+	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + jsonfilename, err
 }
