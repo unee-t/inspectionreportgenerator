@@ -7,23 +7,39 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <style>
-body { font-family: Roboto,sans-serif; background-color: #0095b6; }
+body { font-family: Roboto,sans-serif; background-color:rgba(217, 217, 217, 0.18); }
 canvas { border: 1px solid black; }
+.signatures { display: flex }
+textarea { width: 100%; height: 50%; }
 </style>
 </head>
 <body>
+<h1>HTML to PDF test bed</h1>
 <div id="app">
 
 <label>Number of signatures required <input style="width: 3em;" min="1" max="10" type=number v-model.number="signaturesNeeded"></label>
 
 <form id="myForm" v-on:submit.prevent="submitForm">
+<div class="signatures">
 <template v-for="item in signaturesNeeded">
+<div class="signature">
 <signature-pad @update="(val) => updateSignature(item-1, val)" :item="item"></signature-pad>
 <input autocomplete="off" required type=text placeholder="Name" :name="'Signatures.' + (item - 1) + '.Name'">
+</div>
 </template>
+</div>
 {{ .csrfField }}
 <button type="submit">Endorse</button>
 </form>
+
+<hr>
+
+<form id="jsonPayload" v-on:submit.prevent="submitJson">
+<textarea v-model="json"></textarea>
+{{ .csrfField }}
+<button type="submit">Submit JSON</button>
+</form>
+
 <ol>
 <li v-if="html"><a target="_blank" :href=html>HTML</a></li>
 <li v-if="pdf"><a target="_blank" :href=pdf>pdf.cool</a></li>

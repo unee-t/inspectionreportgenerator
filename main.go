@@ -99,6 +99,7 @@ type InspectionReport struct {
 	Signatures []Signature
 	Unit       Unit
 	Report     Report
+	Template   template.URL
 }
 
 func main() {
@@ -108,6 +109,7 @@ func main() {
 	app.PathPrefix("/templates").Handler(http.FileServer(http.Dir(".")))
 	app.HandleFunc("/", handleIndex).Methods("GET")
 	app.HandleFunc("/htmlgen", handlePost).Methods("POST")
+	app.HandleFunc("/jsonhtmlgen", handleJSON).Methods("POST")
 	app.HandleFunc("/pdfgen", handlePDFgen).Methods("GET")
 
 	var options []csrf.Option
@@ -136,6 +138,78 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+}
+
+func handleJSON(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var ir InspectionReport
+	err := decoder.Decode(&ir)
+	if err != nil {
+		panic(err)
+	}
+	log.Infof("%+v", ir)
+
+	var filename = ""
+
+	for _, v := range ir.Signatures {
+		filename += strings.ToLower(v.Name)
+	}
+
+	reg, _ := regexp.Compile("[^a-z]+")
+	filename = reg.ReplaceAllString(filename, "") + ".html"
+
+	t, err := template.New("").Funcs(template.FuncMap{
+		"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+		"increment":  func(i int) int { return i + 1 },
+	}).ParseFiles("templates/signoff.html")
+
+	if err != nil {
+		log.WithError(err).Fatal("failed to parse signoff.html")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	var b bytes.Buffer
+
+	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", ir)
+	if err != nil {
+		log.WithError(err).Fatal("failed to execute template ir")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
+	if err != nil {
+		log.WithError(err).Fatal("failed to get config")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	svc := s3.New(cfg)
+
+	filename = time.Now().Format("2006-01-02") + "/" + filename
+	putparams := &s3.PutObjectInput{
+		Bucket:      aws.String("dev-media-unee-t"),
+		Body:        bytes.NewReader(b.Bytes()),
+		Key:         aws.String(filename),
+		ACL:         s3.ObjectCannedACLPublicRead,
+		ContentType: aws.String("text/html; charset=UTF-8"),
+	}
+
+	req := svc.PutObjectRequest(putparams)
+	_, err = req.Send()
+
+	if err != nil {
+		log.WithError(err).Fatal("failed to put")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	response.JSON(w, struct {
+		HTML string
+	}{
+		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", filename),
+	})
+
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
@@ -271,6 +345,9 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var b bytes.Buffer
+
+	dump(signoff)
+
 	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
 	if err != nil {
 		log.WithError(err).Fatal("failed to execute template signoff")
@@ -489,4 +566,13 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 	}{
 		url,
 	})
+}
+
+func dump(data interface{}) (err error) {
+	dataJSON, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile("dump.json", dataJSON, 0644)
+	return err
 }

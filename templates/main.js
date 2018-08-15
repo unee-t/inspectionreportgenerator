@@ -24,12 +24,17 @@ new Vue({
   el: '#app',
   delimiters: ['${', '}'],
   data: {
-    signaturesNeeded: 1,
+    signaturesNeeded: 2,
     html: '',
     pdf: '', // pdf.cool
     ppdf: '', // Prince PDF
+    json: '',
     // all signature urls as example
     signatureDataUris: []
+  },
+  mounted () {
+    fetch('/templates/dump.json').then((result) => { return result.text() })
+      .then((json) => { this.json = json })
   },
   methods: {
     async submitForm (x) {
@@ -46,6 +51,22 @@ new Vue({
       fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
         .then(stream => stream.json())
         .then(pdf => this.ppdf = pdf.PDF)
+    },
+    async submitJson (x) {
+      console.log('Submitting JSON', this.json)
+      const result = await fetch('/jsonhtmlgen', { method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'].value },
+        body: this.json })
+        .then((result) => { return result.json() })
+      this.html = result.HTML
+
+      // fetch(`/pdfgen?url=${result.HTML}`)
+      //   .then(stream => stream.json())
+      //   .then(pdf => this.pdf = pdf.PDF)
+      // fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
+      //   .then(stream => stream.json())
+      //   .then(pdf => this.ppdf = pdf.PDF)
     },
     updateSignature (index, url) {
       Vue.set(this.signatureDataUris, index, url)
