@@ -35,9 +35,11 @@ input { width: 80%; }
 
 <hr>
 <h2>Via Raw JSON payload</h2>
-
+<p style="font-size: small; padding: 0; margin: 0"><a href="https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go">Structure reference</a>. Remove template field to use default template.</p>
 <form id="jsonPayload" v-on:submit.prevent="submitJson">
+<label>JSON URL
 <input v-model="jsonurl">
+</label>
 <textarea v-model="json"></textarea>
 {{ .csrfField }}
 <button type="submit">Submit JSON</button>
