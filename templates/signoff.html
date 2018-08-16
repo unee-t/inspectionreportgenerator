@@ -12,7 +12,7 @@ body,html{
 }
 
 .signatures { border: thin solid #0099BC; padding: 10px; margin: 10px; }
-section#signatures { display: flex; }
+section#signatures, .involved { display: flex; }
 table.footer { width: 100%; }
 table.signature { width: 20%; }
 table.signature img { height: 50px; }
@@ -42,10 +42,10 @@ article img {
 .unit table { width: 100%; }
 .unit td:nth-child(1), td:nth-child(3) {  text-transform: uppercase; color: #4D676E; font-weight: bold; }
 
-table { border-spacing: 0; background-color:rgba(217, 217, 217, 0.18);   }
 h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; color: #4D676E; font-size: 10px; font-weight: bold; }
 h2 { background-color:rgba(0, 153, 188, 0.12); font-size: 11px; padding: 0.7em; font-weight: 900; }
-tfoot { color: white; background-color: #0099BC; }
+footer tfoot { color: white; background-color: #0099BC; }
+footer table { border-spacing: 0; }
 
 dt {
     display: block;
@@ -117,7 +117,9 @@ footer ul { border: thin solid black; }
 <tr><td></td><td></td><td>Country</td><td>{{ .Unit.Information.Country }}</td></tr>
 <tr><td></td><td></td><td>City</td><td>{{ .Unit.Information.City }}</td></tr>
 <tr><td></td><td></td><td>State</td><td>{{ .Unit.Information.State }}</td></tr>
+<tfoot>
 <tr><td colspan="2">Unit description</td><td colspan="2">{{ .Unit.Information.Description }}</td></tr>
+</tfoot>
 </table>
 
 {{ range .Report.Images }}
@@ -240,6 +242,7 @@ footer ul { border: thin solid black; }
 
 <div class="signatures">
 <p>People involved</p>
+<div class="involved">
 {{ range $index, $value := .Signatures }}
 {{if ne $index 0 }}
 <table class="signature">
@@ -249,6 +252,7 @@ footer ul { border: thin solid black; }
 </table>
 {{ end }}
 {{ end }}
+</div>
 </div>
 </section>
 
