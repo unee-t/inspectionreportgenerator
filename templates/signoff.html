@@ -13,14 +13,20 @@ body,html{
 
 .signatures { border: thin solid #0099BC; padding: 10px; margin: 10px; }
 section#signatures, .involved { display: flex; }
+/*
+.unit table { width: 100%; }
 table.footer { width: 100%; }
+*/
+table { width: 100% }
+tfoot { padding-top: 0.5em; }
+
 table.signature { width: 20%; }
 table.signature img { height: 50px; }
 
 .signatures p { text-transform: uppercase; color: #4D676E; }
 
 html { font-family: 'Roboto', sans-serif; }
-dl, .items { column-count: 2; }
+.items { column-count: 2; }
 .item { background-color: #F5F5F5; }
 
 article img {
@@ -39,8 +45,7 @@ article img {
 	#reference { display: none; }
 }
 
-.unit table { width: 100%; }
-.unit td:nth-child(1), td:nth-child(3) {  text-transform: uppercase; color: #4D676E; font-weight: bold; }
+article td:nth-child(1), article td:nth-child(3) {  text-transform: uppercase; color: #4D676E; font-weight: bold; }
 
 h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; color: #4D676E; font-size: 10px; font-weight: bold; }
 h2 { background-color:rgba(0, 153, 188, 0.12); font-size: 11px; padding: 0.7em; font-weight: 900; }
@@ -140,14 +145,10 @@ footer ul { border: thin solid black; }
 <img alt="" src="{{ . }}">
 {{ end }}
 
-<dl>
-	<dt>Category</dt>
-	<dd>{{ .Category }}</dd>
-	<dt>Status</dt>
-	<dd>{{ .Status }}</dd>
-	<dt>Details</dt>
-	<dd>{{ .Details }}</dd>
-</dl>
+<table>
+<tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
+<tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td>
+</table>
 {{ end }}
 
 </section>
@@ -172,14 +173,13 @@ footer ul { border: thin solid black; }
 <article>
 <h2>Room {{ increment $index }} - {{ $value.Name }}</h2>
 
-<dl>
-	<dt>Cases</dt>
-	<dd>{{ len $value.Cases }}</dd>
-	<dt>Inventory items</dt>
-	<dd>{{ len $value.Inventory }}</dd>
-	<dt>Description</dt>
-	<dd>{{ $value.Description }}</dd>
-</dl>
+
+<table>
+<tr><td>Cases</td><td>{{ len $value.Cases }}</td><td>Inventory items</td><td>{{ len $value.Inventory }}</td></tr>
+<tfoot>
+<tr><td colspan="2">Description</td><td colspan="2">{{ $value.Description }}</td></tr>
+</tfoot>
+</table>
 
 {{ range $value.Images }}
 <img alt="{{ $value.Name }}" src="{{ . }}">
@@ -194,14 +194,11 @@ footer ul { border: thin solid black; }
 <img alt="" src="{{ . }}">
 {{ end }}
 
-<dl>
-	<dt>Category</dt>
-	<dd>{{ .Category }}</dd>
-	<dt>Status</dt>
-	<dd>{{ .Status }}</dd>
-	<dt>Details</dt>
-	<dd>{{ .Details }}</dd>
-</dl>
+<table>
+<tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
+<tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td>
+</table>
+
 {{ end }}
 </section>
 {{ end }}
