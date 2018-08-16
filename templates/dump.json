@@ -1,0 +1,127 @@
+{
+    "Template": "https://s.natalian.org/2018-08-15/blah.html",
+    "ID": "87654321",
+    "Date": "2018-08-15T10:18:30.930270034+08:00",
+    "Signatures": [
+        {
+            "Name": "ok",
+            "Role": "",
+            "DataURI": "data:image/png;base64,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"
+        },
+        {
+            "Name": "d",
+            "Role": "",
+            "DataURI": "data:image/png;base64,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"
+        }
+    ],
+    "Unit": {
+        "Information": {
+            "Name": "Unit 01-02",
+            "Type": "Apartment/Flat",
+            "Address": "20 Maple Avenue",
+            "Postcode": "90731",
+            "City": "San Pedro",
+            "State": "California",
+            "Country": "USA",
+            "Description": "Blue house with a front porch. Parking is not allowed in the driveway"
+        }
+    },
+    "Report": {
+        "Name": "20 Maple Avenue, Unit 01-02",
+        "Creator": "",
+        "Description": "",
+        "Images": [
+            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg"
+        ],
+        "Cases": [
+            {
+                "Title": "Cracks on Ceiling",
+                "Images": [
+                    "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/inspection_report.jpg"
+                ],
+                "Category": "Reference",
+                "Status": "Confirmed",
+                "Details": "Worse over time and rain is sometimes seen to be leaking when it rains."
+            }
+        ],
+        "Inventory": [
+            {
+                "Name": "Ikea Ivar Shelf",
+                "Images": [
+                    "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/images.jpg"
+                ],
+                "Description": "1 in acceptable condition"
+            }
+        ],
+        "Rooms": [
+            {
+                "Name": "Big Meeting Room",
+                "Description": "300 sqft with built-in cabinets, air-con and WiFi",
+                "Images": null,
+                "Cases": [
+                    {
+                        "Title": "Light is not working",
+                        "Images": [
+                            "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg",
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/e_cartoonify/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg"
+                        ],
+                        "Category": "Repair",
+                        "Status": "Confirmed",
+                        "Details": "Lights are unable to turn on after change the light bulb"
+                    },
+                    {
+                        "Title": "Floor stain and the mould seems to smell",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/wood_floor_stain.jpg"
+                        ],
+                        "Category": "Complex project",
+                        "Status": "Reopened",
+                        "Details": "Horrible floor statins are appearing due to moisture over time. There is a bad smell."
+                    }
+                ],
+                "Inventory": null
+            },
+            {
+                "Name": "Pantry",
+                "Description": "800 sqft, high with built-in cabinets, air-con and WiFi",
+                "Images": [
+                    "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry.jpg"
+                ],
+                "Cases": null,
+                "Inventory": [
+                    {
+                        "Name": "LG Electronics fridge",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_fridge.jpg"
+                        ],
+                        "Description": "1 in acceptable working condition"
+                    },
+                    {
+                        "Name": "Solid Wood long table",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_02.jpg"
+                        ],
+                        "Description": "1 in very bad condition. Table is baldy chipped and edges are wearing out."
+                    },
+                    {
+                        "Name": "Pantry cabinet",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_microwave.jpg"
+                        ],
+                        "Description": "1 in good condition. Well maintained."
+                    },
+                    {
+                        "Name": "Bekant chairs",
+                        "Images": [
+                            "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg",
+                            "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"
+                        ],
+                        "Description": "12 in mint condition."
+                    }
+                ]
+            }
+        ],
+        "Comments": "A comment pertaining to the report itself."
+    }
+}

@@ -200,13 +200,13 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		Report: Report{
 			Name: "20 Maple Avenue, Unit 01-02",
 			Images: []template.URL{
-				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
-				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
 			},
 			Cases: []Case{{
 				Title: "Cracks on Ceiling",
 				Images: []template.URL{
-					"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/inspection_report.jpg",
+					"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/inspection_report.jpg",
 				},
 				Category: "Reference",
 				Status:   "Confirmed",
@@ -214,7 +214,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			}},
 			Inventory: []Item{{
 				Name:        "Ikea Ivar Shelf",
-				Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/images.jpg"},
+				Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/images.jpg"},
 				Description: "1 in acceptable condition",
 			},
 			},
@@ -226,14 +226,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 					Cases: []Case{
 						{
 							Title:    "Light is not working",
-							Images:   []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg", "http://res.cloudinary.com/unee-t-staging/image/upload/e_cartoonify/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg"},
+							Images:   []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg", "http://res.cloudinary.com/unee-t-staging/image/upload/e_cartoonify/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg"},
 							Category: "Repair",
 							Status:   "Confirmed",
 							Details:  "Lights are unable to turn on after change the light bulb",
 						},
 						{
 							Title:    "Floor stain and the mould seems to smell",
-							Images:   []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/wood_floor_stain.jpg"},
+							Images:   []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/wood_floor_stain.jpg"},
 							Category: "Complex project",
 							Status:   "Reopened",
 							Details:  "Horrible floor statins are appearing due to moisture over time. There is a bad smell.",
@@ -244,27 +244,27 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 				{
 					Name:        "Pantry",
 					Description: "800 sqft, high with built-in cabinets, air-con and WiFi",
-					Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry.jpg"},
+					Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry.jpg"},
 					Cases:       nil,
 					Inventory: []Item{
 						{
 							Name:        "LG Electronics fridge",
-							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_fridge.jpg"},
+							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_fridge.jpg"},
 							Description: "1 in acceptable working condition",
 						},
 						{
 							Name:        "Solid Wood long table",
-							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_02.jpg"},
+							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_02.jpg"},
 							Description: "1 in very bad condition. Table is baldy chipped and edges are wearing out.",
 						},
 						{
 							Name:        "Pantry cabinet",
-							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_microwave.jpg"},
+							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_microwave.jpg"},
 							Description: "1 in good condition. Well maintained.",
 						},
 						{
 							Name:        "Bekant chairs",
-							Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
+							Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
 							Description: "12 in mint condition.",
 						},
 					},
