@@ -30,6 +30,19 @@ import (
 )
 
 func main() {
+
+	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
+	if err != nil {
+		log.WithError(err).Fatal("setting up credentials")
+		return
+	}
+	cfg.Region = endpoints.ApSoutheast1RegionID
+	e, err := env.New(cfg)
+	if err != nil {
+		log.WithError(err).Warn("error getting unee-t env")
+		return
+	}
+
 	addr := ":" + os.Getenv("PORT")
 	app := mux.NewRouter()
 
@@ -38,14 +51,17 @@ func main() {
 	app.HandleFunc("/htmlgen", handlePost).Methods("POST")
 	app.HandleFunc("/jsonhtmlgen", handleJSON).Methods("POST")
 	app.HandleFunc("/pdfgen", handlePDFgen).Methods("GET")
+	app.HandleFunc("/", env.Towr(env.Protect(http.HandlerFunc(handleJSON), e.GetSecret("API_ACCESS_TOKEN"))))
 
-	var options []csrf.Option
-
+	// var options []csrf.Option
 	// If developing locally
 	// options = append(options, csrf.Secure(false))
+	// if err := http.ListenAndServe(addr,
+	// 	csrf.Protect([]byte("32-byte-long-auth-key"), options...)(app)); err != nil {
+	// 	log.WithError(err).Fatal("error listening")
+	// }
 
-	if err := http.ListenAndServe(addr,
-		csrf.Protect([]byte("32-byte-long-auth-key"), options...)(app)); err != nil {
+	if err := http.ListenAndServe(addr, app); err != nil {
 		log.WithError(err).Fatal("error listening")
 	}
 }
@@ -68,12 +84,17 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleJSON(w http.ResponseWriter, r *http.Request) {
+	log.Info("RIGHT HERE")
 	decoder := json.NewDecoder(r.Body)
 	var ir InspectionReport
 	err := decoder.Decode(&ir)
+	log.Info("here")
 	if err != nil {
-		panic(err)
+		log.WithError(err).Fatal("bad JSON")
+		http.Error(w, "JSON does not conform to https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go", http.StatusBadRequest)
+		return
 	}
+	log.Info("here now")
 	log.Infof("%+v", ir)
 
 	var filename = ""
@@ -84,6 +105,12 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 
 	reg, _ := regexp.Compile("[^a-z]+")
 	filename = reg.ReplaceAllString(filename, "")
+
+	if filename == "" {
+		log.WithError(err).Fatal("filename is empty")
+		http.Error(w, "Missing valid names for signatures", http.StatusBadRequest)
+		return
+	}
 
 	var t *template.Template
 	var b bytes.Buffer
@@ -357,76 +384,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func pdfraptorgen(url string) (pdfurl string, err error) {
-
-	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
-	if err != nil {
-		log.WithError(err).Fatal("setting up credentials")
-		return
-	}
-	cfg.Region = endpoints.ApSoutheast1RegionID
-	e, err := env.New(cfg)
-	if err != nil {
-		log.WithError(err).Warn("error getting unee-t env")
-		return
-	}
-
-	// https://documenter.getpostman.com/view/2810998/pdfcool/77mXfrG
-	payload := new(bytes.Buffer)
-	enc := json.NewEncoder(payload)
-	enc.SetIndent("", "    ")
-	enc.SetEscapeHTML(false)
-	enc.Encode(struct {
-		URL  string `json:"document_url"`
-		User string `json:"user_credentials"`
-		Test bool   `json:"test"`
-	}{
-		url,
-		e.GetSecret("RAPTORAPIKEY"),
-		true,
-	})
-
-	// https://docraptor.com/documentation
-
-	log.Infof("docraptor payload: %s", payload.String())
-
-	req, err := http.NewRequest("POST", "https://docraptor.com/docs", payload)
-
-	req.Header.Add("Content-Type", "application/json")
-
-	res, err := http.DefaultClient.Do(req)
-
-	if err != nil {
-		log.WithError(err).Fatal("failed to make request")
-		return
-	}
-
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-
-	svc := s3.New(cfg)
-
-	basename := path.Base(url)
-	filename := time.Now().Format("2006-01-02") + "/p-" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
-	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String("dev-media-unee-t"),
-		Body:        bytes.NewReader(body),
-		Key:         aws.String(filename),
-		ACL:         s3.ObjectCannedACLPublicRead,
-		ContentType: aws.String("application/pdf; charset=UTF-8"),
-	}
-
-	s3req := svc.PutObjectRequest(putparams)
-	_, err = s3req.Send()
-
-	if err != nil {
-		log.WithError(err).Fatal("failed to put")
-		return
-	}
-
-	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + filename, err
-}
-
 func pdfcoolgen(url string) (pdfurl string, err error) {
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
@@ -498,7 +455,6 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 
 func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
-	svc := r.URL.Query().Get("svc")
 
 	if url == "" {
 		http.Error(w, "Missing URL", 400)
@@ -518,11 +474,7 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if svc == "raptor" {
-		url, err = pdfraptorgen(url)
-	} else {
-		url, err = pdfcoolgen(url)
-	}
+	url, err = pdfcoolgen(url)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate PDF")
 		http.Error(w, err.Error(), 500)
@@ -537,7 +489,6 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 }
 
 func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err error) {
-	log.Info("Here DUMPin")
 	dataJSON, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return "", err

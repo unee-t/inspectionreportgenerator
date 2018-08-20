@@ -43,7 +43,7 @@ new Vue({
     async submitForm (x) {
       const result = await fetch('/htmlgen', { method: 'POST',
         credentials: 'same-origin',
-        headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'].value },
+        headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'] ? x.target.elements['gorilla.csrf.Token'].value : '' },
         body: new FormData(x.target) })
         .then((result) => { return result.json() })
       this.html = result.HTML
@@ -57,7 +57,9 @@ new Vue({
       fetch(`/pdfgen?url=${result.HTML}`)
         .then(stream => stream.json())
         .then(pdf => this.pdf = pdf.PDF)
-      fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
+      fetch('https://prince.dev.unee-t.com/', { method: 'POST',
+        credentials: 'same-origin',
+        body: JSON.stringify({ 'document_url': this.html })})
         .then(stream => stream.json())
         .then(pdf => this.ppdf = pdf.PDF)
     },
@@ -65,7 +67,7 @@ new Vue({
       // console.log('Submitting JSON', this.json)
       const result = await fetch('/jsonhtmlgen', { method: 'POST',
         credentials: 'same-origin',
-        headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'].value },
+        headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'] ? x.target.elements['gorilla.csrf.Token'].value : '' },
         body: this.json })
         .then((result) => { return result.json() })
       this.html = result.HTML
@@ -79,7 +81,9 @@ new Vue({
       fetch(`/pdfgen?url=${result.HTML}`)
         .then(stream => stream.json())
         .then(pdf => this.pdf = pdf.PDF)
-      fetch(`/pdfgen?svc=raptor&url=${result.HTML}`)
+      fetch('https://prince.dev.unee-t.com/', { method: 'POST',
+        credentials: 'same-origin',
+        body: JSON.stringify({ 'document_url': this.html })})
         .then(stream => stream.json())
         .then(pdf => this.ppdf = pdf.PDF)
     },

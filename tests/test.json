@@ -1,0 +1,123 @@
+{
+    "ID": "12345678",
+    "Date": "2018-08-20T03:59:25.483454157Z",
+    "Signatures": [
+        {
+            "Name": "Test",
+            "Role": "Management Company",
+            "Email": "",
+            "DataURI": "data:image/png;base64,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"
+        }
+    ],
+    "Unit": {
+        "Information": {
+            "Name": "Unit 01-02",
+            "Type": "Apartment/Flat",
+            "Address": "20 Maple Avenue",
+            "Postcode": "90731",
+            "City": "San Pedro",
+            "State": "California",
+            "Country": "USA",
+            "Description": "Blue house with a front porch. Parking is not allowed in the driveway"
+        }
+    },
+    "Report": {
+        "Name": "20 Maple Avenue, Unit 01-02",
+        "Creator": "",
+        "Description": "",
+        "Images": [
+            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg"
+        ],
+        "Cases": [
+            {
+                "Title": "Cracks on Ceiling",
+                "Images": [
+                    "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/inspection_report.jpg"
+                ],
+                "Category": "Reference",
+                "Status": "Confirmed",
+                "Details": "Worse over time and rain is sometimes seen to be leaking when it rains."
+            }
+        ],
+        "Inventory": [
+            {
+                "Name": "Ikea Ivar Shelf",
+                "Images": [
+                    "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/images.jpg"
+                ],
+                "Description": "1 in acceptable condition"
+            }
+        ],
+        "Rooms": [
+            {
+                "Name": "Big Meeting Room",
+                "Description": "300 sqft with built-in cabinets, air-con and WiFi",
+                "Images": null,
+                "Cases": [
+                    {
+                        "Title": "Light is not working",
+                        "Images": [
+                            "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg",
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/e_cartoonify/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg"
+                        ],
+                        "Category": "Repair",
+                        "Status": "Confirmed",
+                        "Details": "Lights are unable to turn on after change the light bulb"
+                    },
+                    {
+                        "Title": "Floor stain and the mould seems to smell",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/wood_floor_stain.jpg"
+                        ],
+                        "Category": "Complex project",
+                        "Status": "Reopened",
+                        "Details": "Horrible floor statins are appearing due to moisture over time. There is a bad smell."
+                    }
+                ],
+                "Inventory": null
+            },
+            {
+                "Name": "Pantry",
+                "Description": "800 sqft, high with built-in cabinets, air-con and WiFi",
+                "Images": [
+                    "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry.jpg"
+                ],
+                "Cases": null,
+                "Inventory": [
+                    {
+                        "Name": "LG Electronics fridge",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_fridge.jpg"
+                        ],
+                        "Description": "1 in acceptable working condition"
+                    },
+                    {
+                        "Name": "Solid Wood long table",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_02.jpg"
+                        ],
+                        "Description": "1 in very bad condition. Table is baldy chipped and edges are wearing out."
+                    },
+                    {
+                        "Name": "Pantry cabinet",
+                        "Images": [
+                            "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_microwave.jpg"
+                        ],
+                        "Description": "1 in good condition. Well maintained."
+                    },
+                    {
+                        "Name": "Bekant chairs",
+                        "Images": [
+                            "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg",
+                            "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"
+                        ],
+                        "Description": "12 in mint condition."
+                    }
+                ]
+            }
+        ],
+        "Comments": "A comment pertaining to the report itself."
+    },
+    "Template": ""
+}
