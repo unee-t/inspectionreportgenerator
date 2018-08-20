@@ -46,20 +46,17 @@ func main() {
 	addr := ":" + os.Getenv("PORT")
 	app := mux.NewRouter()
 
+	CSRF := csrf.Protect([]byte("32-byte-long-auth-key-yeah"), csrf.Secure(false))
+	if os.Getenv("UP_STAGE") != "" {
+		CSRF = csrf.Protect([]byte("32-byte-long-auth-key-yeah"), csrf.Secure(true))
+	}
+
 	app.PathPrefix("/templates").Handler(http.FileServer(http.Dir(".")))
-	app.HandleFunc("/", handleIndex).Methods("GET")
-	app.HandleFunc("/htmlgen", handlePost).Methods("POST")
-	app.HandleFunc("/jsonhtmlgen", handleJSON).Methods("POST")
+	app.HandleFunc("/", env.Towr(CSRF(http.HandlerFunc(handleIndex)))).Methods("GET")
+	app.HandleFunc("/htmlgen", env.Towr(CSRF(http.HandlerFunc(handlePost)))).Methods("POST")
+	app.HandleFunc("/jsonhtmlgen", env.Towr(CSRF(http.HandlerFunc(handleJSON)))).Methods("POST")
 	app.HandleFunc("/pdfgen", handlePDFgen).Methods("GET")
 	app.HandleFunc("/", env.Towr(env.Protect(http.HandlerFunc(handleJSON), e.GetSecret("API_ACCESS_TOKEN"))))
-
-	// var options []csrf.Option
-	// If developing locally
-	// options = append(options, csrf.Secure(false))
-	// if err := http.ListenAndServe(addr,
-	// 	csrf.Protect([]byte("32-byte-long-auth-key"), options...)(app)); err != nil {
-	// 	log.WithError(err).Fatal("error listening")
-	// }
 
 	if err := http.ListenAndServe(addr, app); err != nil {
 		log.WithError(err).Fatal("error listening")
