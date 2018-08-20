@@ -7,74 +7,74 @@ import (
 
 // Signature holds the wet signature
 type Signature struct {
-	Name    string // Who
-	Role    string
-	Email   string       // Needs to match Creator in order to be consider the report was created by
-	DataURI template.URL // What: Graphic signature
+	Name    string       `json:"name"` // Who
+	Role    string       `json:"role"`
+	Email   string       `json:"email"`    // Needs to match Creator in order to be consider the report was created by
+	DataURI template.URL `json:"data_uri"` // What: Graphic signature
 }
 
 // Case summarises the cases
 type Case struct {
-	Title    string
-	Images   []template.URL
-	Category string
-	Status   string
-	Details  string
+	Title    string         `json:"title"`
+	Images   []template.URL `json:"images"`
+	Category string         `json:"category"`
+	Status   string         `json:"status"`
+	Details  string         `json:"details"`
 }
 
 // Information pertaining to the Unit
 type Information struct { // How to see object in Mongo ?
-	Name        string
-	Type        string
-	Address     string
-	Postcode    string
-	City        string
-	State       string
-	Country     string
-	Description string
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	Address     string `json:"address"`
+	Postcode    string `json:"postcode"`
+	City        string `json:"city"`
+	State       string `json:"state"`
+	Country     string `json:"country"`
+	Description string `json:"description"`
 }
 
 // Unit is actually a Product in Bugzilla
 type Unit struct {
-	Information Information // Stored in Mongo
+	Information Information `json:"information"` // Stored in Mongo
 }
 
 // Item is part of an Inventory
 type Item struct {
-	Name        string
-	Images      []template.URL
-	Description string
+	Name        string         `json:"name"`
+	Images      []template.URL `json:"images"`
+	Description string         `json:"description"`
 	// Not needed right now
 	// Cases       []Case // TODO: not sure what this looks like in the published report
 }
 
 // Report for the Unit and rooms of the unit
 type Report struct {
-	Name        string // Handover of unit – 20 Maple Avenue, Unit 01-02
-	Creator     string // email from bugzilla
-	Description string
-	Images      []template.URL
-	Cases       []Case
-	Inventory   []Item
-	Rooms       []Room
-	Comments    string
+	Name        string         `json:"name"`    // Handover of unit – 20 Maple Avenue, Unit 01-02
+	Creator     string         `json:"creator"` // email from bugzilla
+	Description string         `json:"description"`
+	Images      []template.URL `json:"images"`
+	Cases       []Case         `json:"cases"`
+	Inventory   []Item         `json:"inventory"`
+	Rooms       []Room         `json:"rooms"`
+	Comments    string         `json:"comments"`
 }
 
 // Room each can have issues (cases) and an inventory
 type Room struct {
-	Name        string
-	Description string
-	Images      []template.URL
-	Cases       []Case
-	Inventory   []Item
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Images      []template.URL `json:"images"`
+	Cases       []Case         `json:"cases"`
+	Inventory   []Item         `json:"inventory"`
 }
 
 // InspectionReport is the top level structure that holds a report
 type InspectionReport struct {
-	ID         string
-	Date       time.Time
-	Signatures []Signature
-	Unit       Unit
-	Report     Report
-	Template   string
+	ID         string      `json:"id"`
+	Date       time.Time   `json:"date"`
+	Signatures []Signature `json:"signatures"`
+	Unit       Unit        `json:"unit"`
+	Report     Report      `json:"report"`
+	Template   string      `json:"template"`
 }
