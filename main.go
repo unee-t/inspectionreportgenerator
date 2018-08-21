@@ -137,6 +137,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			Images: []string{
 				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
 				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
 			},
 			Cases: []Case{{
 				Title: "Cracks on Ceiling",
@@ -200,6 +208,16 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 						{
 							Name:        "Bekant chairs",
 							Images:      []string{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
+							Description: "12 in mint condition.",
+						},
+						{
+							Name:        "More chairs",
+							Images:      []string{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
+							Description: "12 in mint condition.",
+						},
+						{
+							Name:        "So many more chairs",
+							Images:      []string{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
 							Description: "12 in mint condition.",
 						},
 					},

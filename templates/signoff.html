@@ -23,17 +23,18 @@ tfoot { padding-top: 0.5em; }
 table.signature { width: 20%; }
 table.signature img { height: 50px; }
 
+.images {
+  flex-wrap: wrap;
+  display: flex;
+  align-items: flex-start;
+}
+
+.images img, .images.item { width: 20%;}
+
 .signatures p { text-transform: uppercase; color: #4D676E; }
 
 html { font-family: 'Roboto', sans-serif; }
-.items { display: flex; }
-.item { background-color: #F5F5F5; }
-
-article img {
-  object-fit: cover;
-  width:230px;
-  height:230px;
-}
+.item { background-color: #F5F5F5; display: flex; }
 
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
@@ -127,9 +128,11 @@ footer ul { border: thin solid black; }
 </tfoot>
 </table>
 
+<div class="images">
 {{ range .Report.Images }}
 <img alt="" src="{{ . }}">
 {{ end }}
+</div>
 
 <table>
 <tr><td>Additional comments</td><td>{{ .Report.Comments }}</td></tr>
@@ -141,9 +144,12 @@ footer ul { border: thin solid black; }
 
 {{ range .Report.Cases }}
 <h4>{{ .Title }}</h4>
+
+<div class="images">
 {{ range .Images }}
 <img alt="" src="{{ . }}">
 {{ end }}
+</div>
 
 <table>
 <tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
@@ -154,12 +160,14 @@ footer ul { border: thin solid black; }
 </section>
 
 <h3>Inventory for unit</h3>
-<section class="items">
+<section class="images">
 {{ range .Report.Inventory }}
 <div class="item">
+<div class="images">
 {{ range .Images }}
 <img alt="" src="{{ . }}">
 {{ end }}
+</div>
 
 <h4>{{ .Name }}</h4>
 <p>{{ .Description }}</p>
@@ -181,9 +189,12 @@ footer ul { border: thin solid black; }
 </tfoot>
 </table>
 
+
+<div class="images">
 {{ range $value.Images }}
 <img alt="{{ $value.Name }}" src="{{ . }}">
 {{ end }}
+</div>
 
 {{ if $value.Cases }}
 <section>
@@ -205,7 +216,7 @@ footer ul { border: thin solid black; }
 
 {{ if $value.Inventory }}
 <h3>Inventory for {{ $value.Name }}</h3>
-<section class="items">
+<section class="images">
 {{ range $value.Inventory }}
 <div class="item">
 {{ range .Images }}
