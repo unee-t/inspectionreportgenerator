@@ -134,13 +134,13 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		},
 		Report: Report{
 			Name: "20 Maple Avenue, Unit 01-02",
-			Images: []template.URL{
+			Images: []string{
 				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
 				"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_7126.jpg",
 			},
 			Cases: []Case{{
 				Title: "Cracks on Ceiling",
-				Images: []template.URL{
+				Images: []string{
 					"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/inspection_report.jpg",
 				},
 				Category: "Reference",
@@ -149,7 +149,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			}},
 			Inventory: []Item{{
 				Name:        "Ikea Ivar Shelf",
-				Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/images.jpg"},
+				Images:      []string{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/images.jpg"},
 				Description: "1 in acceptable condition",
 			},
 			},
@@ -161,14 +161,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 					Cases: []Case{
 						{
 							Title:    "Light is not working",
-							Images:   []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg", "http://res.cloudinary.com/unee-t-staging/image/upload/e_cartoonify/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg"},
+							Images:   []string{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg", "http://res.cloudinary.com/unee-t-staging/image/upload/e_cartoonify/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_9411.jpg"},
 							Category: "Repair",
 							Status:   "Confirmed",
 							Details:  "Lights are unable to turn on after change the light bulb",
 						},
 						{
 							Title:    "Floor stain and the mould seems to smell",
-							Images:   []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/wood_floor_stain.jpg"},
+							Images:   []string{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/wood_floor_stain.jpg"},
 							Category: "Complex project",
 							Status:   "Reopened",
 							Details:  "Horrible floor statins are appearing due to moisture over time. There is a bad smell.",
@@ -179,27 +179,27 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 				{
 					Name:        "Pantry",
 					Description: "800 sqft, high with built-in cabinets, air-con and WiFi",
-					Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry.jpg"},
+					Images:      []string{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry.jpg"},
 					Cases:       nil,
 					Inventory: []Item{
 						{
 							Name:        "LG Electronics fridge",
-							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_fridge.jpg"},
+							Images:      []string{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_fridge.jpg"},
 							Description: "1 in acceptable working condition",
 						},
 						{
 							Name:        "Solid Wood long table",
-							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_02.jpg"},
+							Images:      []string{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_02.jpg"},
 							Description: "1 in very bad condition. Table is baldy chipped and edges are wearing out.",
 						},
 						{
 							Name:        "Pantry cabinet",
-							Images:      []template.URL{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_microwave.jpg"},
+							Images:      []string{"http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/pantry_microwave.jpg"},
 							Description: "1 in good condition. Well maintained.",
 						},
 						{
 							Name:        "Bekant chairs",
-							Images:      []template.URL{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
+							Images:      []string{"https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0522.jpg", "https://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_500,w_500/v1534218648/Unee-T%20inspection%20report%20-%20placeholder%20images/IMG_0519.jpg"},
 							Description: "12 in mint condition.",
 						},
 					},
@@ -385,6 +385,26 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		return output, fmt.Errorf("Missing valid names from signatures in order to create filename")
 	}
 
+	ir.Report.Images = updateImages(ir.Report.Images)
+	for item := 0; item < len(ir.Report.Inventory); item++ {
+		ir.Report.Inventory[item].Images = updateImages(ir.Report.Inventory[item].Images)
+	}
+	for room := 0; room < len(ir.Report.Rooms); room++ {
+		ir.Report.Rooms[room].Images = updateImages(ir.Report.Rooms[room].Images)
+
+		for item := 0; item < len(ir.Report.Rooms[room].Inventory); item++ {
+			ir.Report.Rooms[room].Inventory[item].Images = updateImages(ir.Report.Rooms[room].Inventory[item].Images)
+		}
+
+		for c := 0; c < len(ir.Report.Rooms[room].Cases); c++ {
+			ir.Report.Rooms[room].Cases[c].Images = updateImages(ir.Report.Rooms[room].Cases[c].Images)
+		}
+
+	}
+	for c := 0; c < len(ir.Report.Cases); c++ {
+		ir.Report.Cases[c].Images = updateImages(ir.Report.Cases[c].Images)
+	}
+
 	var t *template.Template
 	var b bytes.Buffer
 
@@ -453,4 +473,12 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		JSON: dumpurl,
 	}, err
 
+}
+
+func updateImages(images []string) []string {
+	for i := 0; i < len(images); i++ {
+		images[i], _ = CloudinaryTransform(images[i], "c_fill,g_auto,h_500,w_500")
+		log.Infof("Updated: %s", images[i])
+	}
+	return images
 }

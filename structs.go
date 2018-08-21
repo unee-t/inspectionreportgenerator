@@ -15,11 +15,11 @@ type Signature struct {
 
 // Case summarises the cases
 type Case struct {
-	Title    string         `json:"title"`
-	Images   []template.URL `json:"images"`
-	Category string         `json:"category"`
-	Status   string         `json:"status"`
-	Details  string         `json:"details"`
+	Title    string   `json:"title"`
+	Images   []string `json:"images"`
+	Category string   `json:"category"`
+	Status   string   `json:"status"`
+	Details  string   `json:"details"`
 }
 
 // Information pertaining to the Unit
@@ -41,32 +41,31 @@ type Unit struct {
 
 // Item is part of an Inventory
 type Item struct {
-	Name        string         `json:"name"`
-	Images      []template.URL `json:"images"`
-	Description string         `json:"description"`
+	Name        string   `json:"name"`
+	Images      []string `json:"images"`
+	Description string   `json:"description"`
 	// Not needed right now
 	// Cases       []Case // TODO: not sure what this looks like in the published report
 }
 
 // Report for the Unit and rooms of the unit
 type Report struct {
-	Name        string         `json:"name"`    // Handover of unit – 20 Maple Avenue, Unit 01-02
-	Creator     string         `json:"creator"` // email from bugzilla
-	Description string         `json:"description"`
-	Images      []template.URL `json:"images"`
-	Cases       []Case         `json:"cases"`
-	Inventory   []Item         `json:"inventory"`
-	Rooms       []Room         `json:"rooms"`
-	Comments    string         `json:"comments"`
+	Name        string   `json:"name"` // Handover of unit – 20 Maple Avenue, Unit 01-02
+	Description string   `json:"description"`
+	Images      []string `json:"images"`
+	Cases       []Case   `json:"cases"`
+	Inventory   []Item   `json:"inventory"`
+	Rooms       []Room   `json:"rooms"`
+	Comments    string   `json:"comments"`
 }
 
 // Room each can have issues (cases) and an inventory
 type Room struct {
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	Images      []template.URL `json:"images"`
-	Cases       []Case         `json:"cases"`
-	Inventory   []Item         `json:"inventory"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Images      []string `json:"images"`
+	Cases       []Case   `json:"cases"`
+	Inventory   []Item   `json:"inventory"`
 }
 
 // InspectionReport is the top level structure that holds a report
