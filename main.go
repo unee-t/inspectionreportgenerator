@@ -29,6 +29,13 @@ import (
 	"github.com/unee-t/env"
 )
 
+type responseHTML struct {
+	HTML string
+	JSON string
+}
+
+var e env.Env
+
 func main() {
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
@@ -37,7 +44,7 @@ func main() {
 		return
 	}
 	cfg.Region = endpoints.ApSoutheast1RegionID
-	e, err := env.New(cfg)
+	e, err = env.New(cfg)
 	if err != nil {
 		log.WithError(err).Warn("error getting unee-t env")
 		return
@@ -89,109 +96,15 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "JSON does not conform to https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go", http.StatusBadRequest)
 		return
 	}
-	log.Info("here now")
 	log.Infof("%+v", ir)
 
-	var filename = ""
-
-	for _, v := range ir.Signatures {
-		filename += strings.ToLower(v.Name)
-	}
-
-	reg, _ := regexp.Compile("[^a-z]+")
-	filename = reg.ReplaceAllString(filename, "")
-
-	if filename == "" {
-		log.WithError(err).Fatal("filename is empty")
-		http.Error(w, "Missing valid names for signatures", http.StatusBadRequest)
-		return
-	}
-
-	var t *template.Template
-	var b bytes.Buffer
-
-	if ir.Template == "" {
-		// Use default template
-		t, err = template.New("").Funcs(template.FuncMap{
-			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
-			"increment":  func(i int) int { return i + 1 },
-		}).ParseFiles("templates/signoff.html")
-
-		if err != nil {
-			log.WithError(err).Fatal("failed to parse signoff.html")
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", ir)
-	} else {
-		resp, err := http.Get(ir.Template)
-		if err != nil {
-			log.WithError(err).Fatalf("failed to fetch %s", ir.Template)
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		defer resp.Body.Close()
-		contents, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.WithError(err).Fatalf("failed to parse %s", ir.Template)
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		tmpl, err := template.New("").Funcs(template.FuncMap{
-			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
-			"increment":  func(i int) int { return i + 1 },
-		}).Parse(string(contents))
-		err = tmpl.Execute(io.Writer(&b), ir)
-	}
-
+	output, err := genHTML(ir)
 	if err != nil {
-		log.WithError(err).Fatal("failed to execute template")
-		http.Error(w, err.Error(), 500)
+		log.WithError(err).Fatal("genHTML from handleJSON")
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
-	if err != nil {
-		log.WithError(err).Fatal("failed to get config")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	svc := s3.New(cfg)
-
-	dumpurl, err := dump(svc, filename, ir)
-	if err != nil {
-		log.WithError(err).Fatal("failed to dump")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	log.Infof("dumpurl %s", dumpurl)
-
-	htmlfilename := time.Now().Format("2006-01-02") + "/" + filename + ".html"
-	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String("dev-media-unee-t"),
-		Body:        bytes.NewReader(b.Bytes()),
-		Key:         aws.String(htmlfilename),
-		ACL:         s3.ObjectCannedACLPublicRead,
-		ContentType: aws.String("text/html; charset=UTF-8"),
-	}
-
-	req := svc.PutObjectRequest(putparams)
-	_, err = req.Send()
-
-	if err != nil {
-		log.WithError(err).Fatal("failed to put")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	response.JSON(w, struct {
-		HTML string
-		JSON string
-	}{
-		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", htmlfilename),
-		dumpurl,
-	})
-
+	response.JSON(w, output)
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
@@ -306,76 +219,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var filename = ""
-
-	for _, v := range signoff.Signatures {
-		filename += strings.ToLower(v.Name)
-	}
-
-	reg, _ := regexp.Compile("[^a-z]+")
-	filename = reg.ReplaceAllString(filename, "")
-
-	t, err := template.New("").Funcs(template.FuncMap{
-		"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
-		"increment":  func(i int) int { return i + 1 },
-	}).ParseFiles("templates/signoff.html")
-
+	output, err := genHTML(signoff)
 	if err != nil {
-		log.WithError(err).Fatal("failed to parse signoff.html")
+		log.WithError(err).Fatal("failed to decode form")
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	var b bytes.Buffer
-
-	err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", signoff)
-	if err != nil {
-		log.WithError(err).Fatal("failed to execute template signoff")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
-	if err != nil {
-		log.WithError(err).Fatal("failed to get config")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	svc := s3.New(cfg)
-
-	dumpurl, err := dump(svc, filename, signoff)
-	if err != nil {
-		log.WithError(err).Fatal("failed to dump")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	log.Infof("dumpurl %s", dumpurl)
-
-	htmlfilename := time.Now().Format("2006-01-02") + "/" + filename + ".html"
-	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String("dev-media-unee-t"),
-		Body:        bytes.NewReader(b.Bytes()),
-		Key:         aws.String(htmlfilename),
-		ACL:         s3.ObjectCannedACLPublicRead,
-		ContentType: aws.String("text/html; charset=UTF-8"),
-	}
-
-	req := svc.PutObjectRequest(putparams)
-	_, err = req.Send()
-
-	if err != nil {
-		log.WithError(err).Fatal("failed to put")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	response.JSON(w, struct {
-		HTML string
-		JSON string
-	}{
-		fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/%s", htmlfilename),
-		dumpurl,
-	})
+	response.JSON(w, output)
 
 }
 
@@ -387,11 +238,6 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 		return
 	}
 	cfg.Region = endpoints.ApSoutheast1RegionID
-	e, err := env.New(cfg)
-	if err != nil {
-		log.WithError(err).Warn("error getting unee-t env")
-		return
-	}
 
 	// https://documenter.getpostman.com/view/2810998/pdfcool/77mXfrG
 	payload := new(bytes.Buffer)
@@ -430,7 +276,7 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 	basename := path.Base(url)
 	filename := time.Now().Format("2006-01-02") + "/" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
 	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String("dev-media-unee-t"),
+		Bucket:      aws.String(e.Bucket()),
 		Body:        bytes.NewReader(body),
 		Key:         aws.String(filename),
 		ACL:         s3.ObjectCannedACLPublicRead,
@@ -445,7 +291,7 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 		return
 	}
 
-	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + filename, err
+	return fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket(), filename), err
 }
 
 func handlePDFgen(w http.ResponseWriter, r *http.Request) {
@@ -464,7 +310,7 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if u.Host != "s3-ap-southeast-1.amazonaws.com" &&
-		strings.HasPrefix(u.Path, "/dev-media-unee-t/") {
+		strings.HasPrefix(u.Path, fmt.Sprintf("/%s/", e.Bucket())) {
 		http.Error(w, "Source must be from our S3", 400)
 		return
 	}
@@ -491,7 +337,7 @@ func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err er
 
 	jsonfilename := time.Now().Format("2006-01-02") + "/" + filename + ".json"
 	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String("dev-media-unee-t"),
+		Bucket:      aws.String(e.Bucket()),
 		Body:        bytes.NewReader(dataJSON),
 		Key:         aws.String(jsonfilename),
 		ACL:         s3.ObjectCannedACLPublicRead,
@@ -501,7 +347,7 @@ func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err er
 	req := svc.PutObjectRequest(putparams)
 	_, err = req.Send()
 
-	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + jsonfilename, err
+	return fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket(), jsonfilename), err
 }
 
 // CloudinaryTransform takes a Cloudinary URL and outputs the transformations we want to see
@@ -522,4 +368,89 @@ func CloudinaryTransform(url string, transforms string) (transformedURL string, 
 	uParsed.Path = strings.Join(append(s[0:3], s[len(s)-2:]...), "/")
 	// log.Infof("Right? %+v", uParsed.Path)
 	return uParsed.String(), nil
+}
+
+func genHTML(ir InspectionReport) (output responseHTML, err error) {
+
+	var filename = ""
+
+	for _, v := range ir.Signatures {
+		filename += strings.ToLower(v.Name)
+	}
+
+	reg, _ := regexp.Compile("[^a-z]+")
+	filename = reg.ReplaceAllString(filename, "")
+
+	if filename == "" {
+		return output, fmt.Errorf("Missing valid names from signatures in order to create filename")
+	}
+
+	var t *template.Template
+	var b bytes.Buffer
+
+	if ir.Template == "" {
+		// Use default template
+		t, err = template.New("").Funcs(template.FuncMap{
+			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+			"increment":  func(i int) int { return i + 1 },
+		}).ParseFiles("templates/signoff.html")
+
+		if err != nil {
+			return output, err
+		}
+		err = t.ExecuteTemplate(io.Writer(&b), "signoff.html", ir)
+	} else {
+		resp, err := http.Get(ir.Template)
+		if err != nil {
+			return output, err
+		}
+		defer resp.Body.Close()
+		contents, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return output, err
+		}
+		tmpl, err := template.New("").Funcs(template.FuncMap{
+			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+			"increment":  func(i int) int { return i + 1 },
+		}).Parse(string(contents))
+		err = tmpl.Execute(io.Writer(&b), ir)
+	}
+
+	if err != nil {
+		return output, err
+	}
+
+	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
+	if err != nil {
+		return output, err
+	}
+	svc := s3.New(cfg)
+
+	dumpurl, err := dump(svc, filename, ir)
+	if err != nil {
+		return output, err
+	}
+	log.Infof("dumpurl %s", dumpurl)
+
+	htmlfilename := time.Now().Format("2006-01-02") + "/" + filename + ".html"
+	putparams := &s3.PutObjectInput{
+		Bucket:      aws.String(e.Bucket()),
+		Body:        bytes.NewReader(b.Bytes()),
+		Key:         aws.String(htmlfilename),
+		ACL:         s3.ObjectCannedACLPublicRead,
+		ContentType: aws.String("text/html; charset=UTF-8"),
+	}
+
+	req := svc.PutObjectRequest(putparams)
+	_, err = req.Send()
+
+	if err != nil {
+		return output, err
+	}
+
+	return responseHTML{
+		HTML: fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket(), htmlfilename),
+		JSON: dumpurl,
+	}, err
+
 }
