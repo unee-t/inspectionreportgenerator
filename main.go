@@ -81,11 +81,9 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleJSON(w http.ResponseWriter, r *http.Request) {
-	log.Info("RIGHT HERE")
 	decoder := json.NewDecoder(r.Body)
 	var ir InspectionReport
 	err := decoder.Decode(&ir)
-	log.Info("here")
 	if err != nil {
 		log.WithError(err).Fatal("bad JSON")
 		http.Error(w, "JSON does not conform to https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go", http.StatusBadRequest)
@@ -504,4 +502,24 @@ func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err er
 	_, err = req.Send()
 
 	return "https://s3-ap-southeast-1.amazonaws.com/dev-media-unee-t/" + jsonfilename, err
+}
+
+// CloudinaryTransform takes a Cloudinary URL and outputs the transformations we want to see
+func CloudinaryTransform(url string, transforms string) (transformedURL string, err error) {
+	// https://res.cloudinary.com/<cloud_name>/<resource_type>/<type>/<version>/<transformations>/<public_id>.<format>
+	// Optional values: resource_type, type, version, transformations, format
+	uParsed, err := neturl.ParseRequestURI(url)
+	if err != nil {
+		return "", err
+	}
+	// log.Infof("%+v\n", *uParsed)
+	if uParsed.Host != "res.cloudinary.com" {
+		return "", fmt.Errorf("%s is not a cloudinary host", uParsed.Host)
+	}
+	s := strings.Split(uParsed.Path, "/")
+	s = append(s[:2], append([]string{transforms}, s[2:]...)...)
+	// log.Infof("%+v", s)
+	uParsed.Path = strings.Join(append(s[0:3], s[len(s)-2:]...), "/")
+	// log.Infof("Right? %+v", uParsed.Path)
+	return uParsed.String(), nil
 }
