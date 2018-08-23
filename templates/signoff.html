@@ -29,12 +29,11 @@ table.signature img { height: 50px; }
   align-items: flex-start;
 }
 
-.images img, .images.item { width: 20%;}
+.images img { width: 20%;}
 
 .signatures p { text-transform: uppercase; color: #4D676E; }
 
 html { font-family: 'Roboto', sans-serif; }
-.item { background-color: #F5F5F5; display: flex; }
 
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
@@ -160,8 +159,9 @@ footer ul { border: thin solid black; }
 </section>
 
 <h3>Inventory for unit</h3>
-<section class="images">
+<section>
 {{ range .Report.Inventory }}
+<h4>{{ .Name }}</h4>
 <div class="item">
 <div class="images">
 {{ range .Images }}
@@ -169,8 +169,12 @@ footer ul { border: thin solid black; }
 {{ end }}
 </div>
 
-<h4>{{ .Name }}</h4>
-<p>{{ .Description }}</p>
+<table>
+<tfoot>
+<tr><td>Description</td><td>{{ .Description }}</td></tr>
+</tfoot>
+</table>
+
 </div>
 {{ end }}
 </section>
@@ -201,9 +205,11 @@ footer ul { border: thin solid black; }
 <h3>Reported issues with the {{ $value.Name }}</h3>
 {{ range $value.Cases }}
 <h4>{{ .Title }}</h4>
+<div class="images">
 {{ range .Images }}
 <img alt="" src="{{ . }}">
 {{ end }}
+</div>
 
 <table>
 <tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
@@ -216,16 +222,21 @@ footer ul { border: thin solid black; }
 
 {{ if $value.Inventory }}
 <h3>Inventory for {{ $value.Name }}</h3>
-<section class="images">
+<section>
 {{ range $value.Inventory }}
-<div class="item">
+<h4>{{ .Name }}</h4>
+<div class="images">
 {{ range .Images }}
 <img alt="" src="{{ . }}">
 {{ end }}
-
-<h4>{{ .Name }}</h4>
-<p>{{ .Description }}</p>
 </div>
+
+<table>
+<tfoot>
+<tr><td>Description</td><td>{{ .Description }}</td></tr>
+</tfoot>
+</table>
+
 {{ end }}
 </section>
 {{ end }}
