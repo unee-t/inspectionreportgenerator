@@ -6,17 +6,13 @@
 <title>Unit Inspection Report</title>
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <style>
-body,html{
+html {
 	font-family: 'Roboto', sans-serif;
 	font-size: 8px;
 }
 
 .signatures { border: thin solid #0099BC; padding: 10px; margin: 10px; }
 section#signatures, .involved { display: flex; }
-/*
-.unit table { width: 100%; }
-table.footer { width: 100%; }
-*/
 table { width: 100% }
 tfoot { padding-top: 0.5em; }
 
@@ -24,17 +20,17 @@ table.signature { width: 20%; }
 table.signature img { height: 50px; }
 
 .images {
-  flex-wrap: wrap;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  flex-flow: row wrap;
 }
 
-.images img { width: 19%;}
+.images img {
+  width: 20%;
+  padding: 0.5em;
+  max-width: 100%;
+}
 
 .signatures p { text-transform: uppercase; color: #4D676E; }
-
-html { font-family: 'Roboto', sans-serif; }
 
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
