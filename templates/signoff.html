@@ -20,14 +20,20 @@ table.signature { width: 20%; }
 table.signature img { height: 50px; }
 
 .images {
-  display: flex;
-  flex-flow: row wrap;
+	display: flex;
+	flex-flow: row wrap;
+	box-sizing: border-box;
+}
+
+.images figure {
+	width: 19%;
+	padding: 0.2em;
+	margin: 0;
 }
 
 .images img {
-  width: 20%;
-  padding: 0.5em;
-  max-width: 100%;
+	width: auto;
+	max-width: 100%;
 }
 
 .signatures p { text-transform: uppercase; color: #4D676E; }
@@ -126,7 +132,9 @@ footer ul { border: thin solid black; }
 
 <div class="images">
 {{ range .Report.Images }}
+<figure>
 <img alt="" src="{{ . }}">
+</figure>
 {{ end }}
 </div>
 
@@ -143,7 +151,9 @@ footer ul { border: thin solid black; }
 
 <div class="images">
 {{ range .Images }}
+<figure>
 <img alt="" src="{{ . }}">
+</figure>
 {{ end }}
 </div>
 
@@ -162,7 +172,9 @@ footer ul { border: thin solid black; }
 <div class="item">
 <div class="images">
 {{ range .Images }}
+<figure>
 <img alt="" src="{{ . }}">
+</figure>
 {{ end }}
 </div>
 
@@ -193,7 +205,9 @@ footer ul { border: thin solid black; }
 
 <div class="images">
 {{ range $value.Images }}
+<figure>
 <img alt="{{ $value.Name }}" src="{{ . }}">
+</figure>
 {{ end }}
 </div>
 
@@ -204,7 +218,9 @@ footer ul { border: thin solid black; }
 <h4>{{ .Title }}</h4>
 <div class="images">
 {{ range .Images }}
+<figure>
 <img alt="" src="{{ . }}">
+</figure>
 {{ end }}
 </div>
 
@@ -224,7 +240,9 @@ footer ul { border: thin solid black; }
 <h4>{{ .Name }}</h4>
 <div class="images">
 {{ range .Images }}
+<figure>
 <img alt="" src="{{ . }}">
+</figure>
 {{ end }}
 </div>
 
