@@ -382,6 +382,7 @@ func CloudinaryTransform(url string, transforms string) (transformedURL string, 
 	if uParsed.Host != "res.cloudinary.com" {
 		return "", fmt.Errorf("%s is not a cloudinary host", uParsed.Host)
 	}
+	uParsed.Scheme = "https"
 	s := strings.Split(uParsed.Path, "/")
 	s = append(s[:2], append([]string{transforms}, s[2:]...)...)
 	// log.Infof("%+v", s)
