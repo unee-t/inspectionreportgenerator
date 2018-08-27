@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,minimum-scale=1">
@@ -7,18 +7,72 @@
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <style>
+@page {
+	size: A4;
+	font-family: 'Roboto', sans-serif;
+	margin-top: 30px; /* header height */
+	margin-bottom: 280px; /* footer height */
+	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
+	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
+	@top-right { content: flow(reference-html); }
+	@bottom { content: flow(footer); }
+}
+  
 html {
 	font-family: 'Roboto', sans-serif;
-	font-size: 8px;
 }
 
-.signatures { border: thin solid #0099BC; padding: 10px; margin: 10px; }
-section#signatures, .involved { display: flex; }
-table { width: 100% }
-tfoot { padding-top: 0.5em; }
+@media screen and (min-width: 800px) {
+	body { padding: 7vmin; }
+}
 
-table.signature { width: 20%; }
-table.signature img { height: 50px; }
+header {
+	position: relative;
+  margin-bottom: 30px;
+}
+
+header img {
+	position: absolute;
+}
+
+header h1 {
+	font-weight: bold;
+	font-size: 21px;
+	padding-left: 60px;
+	margin-bottom: 0;
+	padding: 8px 0 0 60px;
+	margin: 0 0 5px;
+}
+
+header p {
+	font-weight: bold;
+	font-size: 16px;
+	padding-left: 60px;
+	margin: 0;
+}
+
+h2 {
+  background-color:rgba(0, 153, 188, 0.12); 
+  font-size: 11px; 
+  padding: 0.7em; 
+  font-weight: 900; 
+}
+
+h3 {
+  text-transform: uppercase; 
+  border-bottom: thin solid #0095B6; 
+  color: #4D676E; 
+  font-size: 10px; 
+  font-weight: bold; 
+}
+
+table { 
+  width: 100% 
+}
+  
+tfoot {
+  padding-top: 0.5em; 
+}
 
 .images {
 	display: flex;
@@ -36,79 +90,75 @@ table.signature img { height: 50px; }
 	width: auto;
 	max-width: 100%;
 }
+  
+.signatures { 
+  border: thin solid #0099BC; 
+  padding: 10px; 
+  margin: 10px; 
+}
 
-.signatures p { text-transform: uppercase; color: #4D676E; }
+.signatures p { 
+  text-transform: uppercase; 
+  color: #4D676E; 
+}
+  
+section#signatures, .involved { 
+  display: flex; 
+}
+
+table.signature { width: 20%; }
+table.signature img { height: 50px; }
 
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
-@media screen and (min-width: 800px) {
-	body { padding: 7vmin; }
-}
-
-@media screen {
-	#reference { display: none; }
-}
-
-article td:nth-child(1), article td:nth-child(3) {  text-transform: uppercase; color: #4D676E; font-weight: bold; }
-
-h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; color: #4D676E; font-size: 10px; font-weight: bold; }
-h2 { background-color:rgba(0, 153, 188, 0.12); font-size: 11px; padding: 0.7em; font-weight: 900; }
-footer tfoot { color: white; background-color: #0099BC; }
-footer table { border-spacing: 0; }
-
-footer {
-	flow: static(footer, start);
-}
-
 #reference {
 	flow: static(reference-html);
-	font-size: 8px;
+	font-size: 12px;
 	text-align: right;
 }
 
-header {
-	position: relative;
+@media screen {
+	#reference { display: block; }
 }
 
-header img {
-	position: absolute;
+article td:nth-child(1), article td:nth-child(3) {
+  text-transform: uppercase; 
+  color: #4D676E; 
+  font-weight: bold; 
 }
 
-header h1 {
-	font-weight: bold;
-	font-size: 21px;
-	padding-left: 50px;
+footer tfoot { 
+  color: white; 
+  background-color: #0099BC; 
 }
 
-header p {
-	font-weight: bold;
-	font-size: 16px;
-	padding-left: 50px;
+footer table { 
+  border-spacing: 0; 
 }
 
-@page {
-	size: A4;
-	font-family: 'Roboto', sans-serif;
-	margin-top: 30px; /* header height */
-	margin-bottom: 280px; /* footer height */
-	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
-	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
-	@top-right { content: flow(reference-html); }
-	@bottom { content: flow(footer); }
+footer {
+  flow: static(footer, start);
 }
 
-footer ul { border: thin solid black; }
+footer ul { 
+  border: thin solid black; 
+}
 </style>
 
 </head>
 <body>
 
-<span id=reference>Reference: <a href="http://case.unee-t.com/i/{{ .ID }}">{{ .ID }}</a><br>Created on: {{ formatDate .Date }}</span>
 
 <header>
-<img alt="Logo" width="44" height="58" src="https://media.dev.unee-t.com/2018-08-15/logo.svg">
-<h1>Unit Inspection Report</h1>
+<div id="branding">
+  <img alt="Logo" width="44" height="58" src="https://media.dev.unee-t.com/2018-08-15/logo.svg">
+  <h1>Unit Inspection Report</h1>
 <p>Handover of unit - {{ .Report.Name }}</p>
+</div>
+<div id="reference">
+	Reference: <a href="http://case.unee-t.com/i/{{ .ID }}">{{ .ID }}</a><br>Created on: {{ formatDate .Date }}
+</div>
+
 </header>
 
 <article class="unit">
