@@ -11,3 +11,14 @@ dev:
 	@echo $$AWS_ACCESS_KEY_ID
 	jq '.profile |= "uneet-dev" |.stages.staging |= (.domain = "pdfgen.dev.unee-t.com" | .zone = "dev.unee-t.com")' up.json.in > up.json
 	up
+
+demo:
+	@echo $$AWS_ACCESS_KEY_ID
+	jq '.profile |= "uneet-demo" |.stages.staging |= (.domain = "pdfgen.demo.unee-t.com" | .zone = "demo.unee-t.com")' up.json.in > up.json
+	up
+
+prod:
+	@echo $$AWS_ACCESS_KEY_ID
+	jq '.profile |= "uneet-prod" |.stages.staging |= (.domain = "pdfgen.unee-t.com" | .zone = "unee-t.com")' up.json.in > up.json
+	up
+

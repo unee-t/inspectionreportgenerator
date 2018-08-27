@@ -329,9 +329,12 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if u.Host != "s3-ap-southeast-1.amazonaws.com" &&
-		strings.HasPrefix(u.Path, fmt.Sprintf("/%s/", e.Bucket())) {
-		http.Error(w, "Source must be from our S3", 400)
+	if u.Host != "s3-ap-southeast-1.amazonaws.com" {
+		http.Error(w, "Source must be from our S3 region", 400)
+		return
+	}
+	if !strings.HasPrefix(u.Path, fmt.Sprintf("/%s/", e.Bucket())) {
+		http.Error(w, "Source must be from our S3 path", 400)
 		return
 	}
 

@@ -57,7 +57,11 @@ new Vue({
       fetch(`/pdfgen?url=${result.HTML}`)
         .then(stream => stream.json())
         .then(pdf => this.pdf = pdf.PDF)
-      fetch('https://prince.dev.unee-t.com/', { method: 'POST',
+
+      const url = new URL(window.location)
+      var princeURL = url.origin.replace('pdfgen', 'prince')
+      if (url.hostname === 'localhost') { princeURL = 'https://prince.dev.unee-t.com' }
+      fetch(princeURL, { method: 'POST',
         credentials: 'same-origin',
         body: JSON.stringify({ 'document_url': this.html })})
         .then(stream => stream.json())
