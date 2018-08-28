@@ -1,0 +1,37 @@
+sudo: required
+language: go
+
+go:
+- tip
+
+before_install:
+- curl -sf https://up.apex.sh/install | sudo sh
+- sudo up upgrade
+
+install:
+- go get -t ./...
+- sudo apt-get install jq -y
+
+matrix:
+  include:
+  - env: DEPLOY=dev
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: make
+      on:
+        branch: master
+  - env: DEPLOY=demo
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: AWS_ACCESS_KEY_ID=$AWS_915001051872_ID AWS_SECRET_ACCESS_KEY=$AWS_915001051872_SECRET make demo
+      on:
+        branch: master
+  - env: DEPLOY=prod
+    deploy:
+      provider: script
+      skip_cleanup: true
+     script: AWS_ACCESS_KEY_ID=$AWS_192458993663_ID AWS_SECRET_ACCESS_KEY=$AWS_192458993663_SECRET make prod
+      on:
+        tags: true
