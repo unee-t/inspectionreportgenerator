@@ -68,6 +68,7 @@ footer {
 
 header {
 	position: relative;
+	flow: static(header);
 }
 
 header img {
@@ -77,10 +78,12 @@ header img {
 header h1 {
 	font-weight: bold;
 	font-size: 21px;
+	margin: 0;
 	padding-left: 50px;
 }
 
 header p {
+	margin-top: 10px;
 	font-weight: bold;
 	font-size: 16px;
 	padding-left: 50px;
@@ -89,11 +92,12 @@ header p {
 @page {
 	size: A4;
 	font-family: 'Roboto', sans-serif;
-	margin-top: 30px; /* header height */
+	margin-top: 100px; /* header height */
 	margin-bottom: 280px; /* footer height */
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
 	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
 	@top-right { content: flow(reference-html); }
+	@top-left { content: flow(header); }
 	@bottom { content: flow(footer); }
 }
 
