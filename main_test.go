@@ -35,7 +35,7 @@ func TestCloudinaryTransform(t *testing.T) {
 				url:        "http://res.cloudinary.com/unee-t-staging/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
 				transforms: "c_fill,g_auto,h_500,w_500",
 			},
-			wantTransformedURL: "http://res.cloudinary.com/unee-t-staging/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+			wantTransformedURL: "https://res.cloudinary.com/unee-t-staging/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
 			wantErr:            false,
 		},
 	}
