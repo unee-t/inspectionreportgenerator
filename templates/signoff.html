@@ -5,22 +5,10 @@
 <meta name="viewport" content="width=device-width,minimum-scale=1">
 <title>Unit Inspection Report</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-<style>
-@page {
-	size: A4;
-	font-family: 'Roboto', sans-serif;
-	margin-top: 100px; /* header height */
-	margin-bottom: 280px; /* footer height */
-	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
-	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
-	@top-right { content: flow(reference-html); }
-	@top-left { content: flow(header); }
-	@bottom { content: flow(footer); }
-}
-  
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900" rel="stylesheet">
+<style>  
 html {
-	font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 @media screen and (min-width: 800px) {
@@ -55,17 +43,22 @@ header p {
 
 h2 {
   background-color:rgba(0, 153, 188, 0.12); 
-  font-size: 11px; 
-  padding: 0.7em; 
+  font-size: 16px;
+  padding: 8px;
   font-weight: 900; 
+  font-weight: bold;
 }
 
 h3 {
   text-transform: uppercase; 
   border-bottom: thin solid #0095B6; 
-  color: #4D676E; 
-  font-size: 10px; 
+  color: #4D676E;
+  font-size: 14px; 
   font-weight: bold; 
+}
+
+p {
+  font-size: 12px;
 }
 
 table { 
@@ -74,6 +67,16 @@ table {
   
 tfoot {
   padding-top: 0.5em; 
+}
+
+#reference {
+  flow: static(reference-html);
+  font-size: 12px;
+  text-align: right;
+}
+
+@media screen {
+	#reference { display: block; }
 }
 
 .images {
@@ -93,37 +96,45 @@ tfoot {
 	max-width: 100%;
 }
   
+#signatures, .involved { 
+  display: flex;
+}
+
+.involved {
+}
+
 .signatures { 
   border: thin solid #0099BC; 
   padding: 10px; 
-  margin: 10px; 
+  margin: 0 10px 10px 0;
+  width: 100%;
+}
+
+.signatures:last-child {
+  margin-right: 0;
+}
+
+.signature .name {
+  font-size: 14px;
+}
+
+.signature .role {
+  font-size: 12px;
 }
 
 .signatures p { 
-  text-transform: uppercase; 
+  text-transform: uppercase;
+  font-weight: bold;
   color: #4D676E; 
-}
-  
-section#signatures, .involved { 
-  display: flex; 
 }
 
 table.signature { width: 20%; }
 table.signature img { height: 50px; }
-
+  
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
-#reference {
-	flow: static(reference-html);
-	font-size: 12px;
-	text-align: right;
-}
-
-@media screen {
-	#reference { display: block; }
-}
-
-article td:nth-child(1), article td:nth-child(3) {
+article td:nth-child(1), 
+article td:nth-child(3) {
   text-transform: uppercase; 
   color: #4D676E; 
   font-weight: bold; 
@@ -131,6 +142,8 @@ article td:nth-child(1), article td:nth-child(3) {
 
 footer {
   flow: static(footer, start);
+  font-size: 10px;
+  margin-top: 15px;
 }
 
 footer table { 
@@ -142,18 +155,52 @@ footer tfoot {
   background-color: #0099BC; 
 }
 
-  footer tfoot td {
-    padding: 8px 10px;
-}
-
-footer tfoot a {
-    color: #ffffff;
-}
-
 footer ul { 
   border: thin solid black; 
 }
 
+.promotion {
+  background: #e5e5e5;
+}
+
+.promotion td {
+padding: 8px 10px;
+}
+
+.promotion img {
+  float: left;
+  margin-right: 8px;
+  margin-top: 5px;
+}
+
+.promotion strong {
+  text-transform: uppercase;
+}
+
+.promotion a {
+  text-decoration: none;
+  color: #0099BC;
+}
+
+.promotion tfoot a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+@page {
+	size: A4;
+	font-family: 'Roboto', sans-serif;
+	margin-top: 100px; /* header height */
+	margin-bottom: 50px; /* footer height */
+	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
+	@top-left { content: flow(header); }
+	@top-right { content: flow(reference-html); }
+	@bottom { 
+    content: flow(footer); 
+    /* content: "Page " counter(page) " of " counter(pages); */
+  }
+}
+  
 </style>
 </head>
   
@@ -303,7 +350,10 @@ footer ul {
 
 <table>
 <tfoot>
-<tr><td>Description</td><td>{{ .Description }}</td></tr>
+<tr>
+  <td>Description</td>
+  <td>{{ .Description }}</td>
+  </tr>
 </tfoot>
 </table>
 
@@ -314,15 +364,14 @@ footer ul {
 {{ end }}
 
 <footer>
-
 <section id="signatures">
 <div class="signatures">
 <p>Report created by</p>
 {{ range $index, $value := .Signatures }}
 {{if eq $index 0 }}
 <table class="signature">
-<tr><td><strong>{{ $value.Name }}</strong></td></tr>
-<tr><td>{{ $value.Role }}</td></tr>
+<tr><td><span class="name"><strong>{{ $value.Name }}</strong></span></td></tr>
+<tr><td><span class="role">{{ $value.Role }}</span></td></tr>
   <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
 </table>
 {{ end }}
@@ -335,8 +384,8 @@ footer ul {
 {{ range $index, $value := .Signatures }}
 {{if ne $index 0 }}
 <table class="signature">
-<tr><td><strong>{{ $value.Name }}</strong></td></tr>
-<tr><td>{{ $value.Role }}</td></tr>
+<tr><td><span class="name"><strong>{{ $value.Name }}</strong></span></td></tr>
+<tr><td><span class="role">{{ $value.Role }}</span></td></tr>
   <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
 </table>
 {{ end }}
@@ -345,22 +394,28 @@ footer ul {
 </div>
 </section>
 
-<table class="footer">
-<thead><tr><th>Smarter way to manage issues</th><th>Available everywhere</th><th></th></tr></thead>
-
+<table class="promotion">
 <tbody>
-<tr>
-<td><img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_smarterway.png">Easily capture issues, communicate and agree on the next steps with everyone on the same page</td>
-<td><img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_available_anywhere.png">Unee-T is a cloud based application. Access your cases on your devices whenever and wherever you need them</td>
-<td><strong>Get your FREE account at unee-t.com</strong></td>
-</tr>
+  <tr>
+    <td width="40%">
+      <img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_smarterway.png">
+        <p><strong>Smarter way to manage issues</strong><br />
+        Easily capture issues, communicate and agree on the next steps with everyone on the same page</p>
+      </td>
+      <td width="40%">
+        <img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_available_anywhere.png">
+        <p><strong>Available everywhere</strong><br />
+        Unee-T is a cloud based application. Access your cases on your devices whenever and wherever you need them</p></td>
+      <td width="20%" align="center">
+        <strong>Get your FREE account at <a href="https://unee-t.com">unee-t.com</a></strong>
+      </td>
+  </tr>
 </tbody>
 
 <tfoot>
 <tr>
 <td>Generated by Unee-T | Smarter Unit Management</td>
-<td>This report is also available online: <a href="http://case.unee-t.com/i/{{ .ID }}">http://case.unee-t.com/i/{{ .ID }}</a></td>
-<td></td>
+<td colspan="2" style="text-align: right;">This report is also available online: <a href="http://case.unee-t.com/i/{{ .ID }}">http://case.unee-t.com/i/{{ .ID }}</a></td>
 </tr>
 </tfoot>
 
