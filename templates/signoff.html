@@ -10,11 +10,12 @@
 @page {
 	size: A4;
 	font-family: 'Roboto', sans-serif;
-	margin-top: 30px; /* header height */
+	margin-top: 100px; /* header height */
 	margin-bottom: 280px; /* footer height */
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
 	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
 	@top-right { content: flow(reference-html); }
+	@top-left { content: flow(header); }
 	@bottom { content: flow(footer); }
 }
   
@@ -28,6 +29,7 @@ html {
 
 header {
 	position: relative;
+  flow: static(header);
   margin-bottom: 30px;
 }
 
