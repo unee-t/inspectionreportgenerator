@@ -129,27 +129,35 @@ article td:nth-child(1), article td:nth-child(3) {
   font-weight: bold; 
 }
 
-footer tfoot { 
-  color: white; 
-  background-color: #0099BC; 
+footer {
+  flow: static(footer, start);
 }
 
 footer table { 
   border-spacing: 0; 
 }
 
-footer {
-  flow: static(footer, start);
+footer tfoot { 
+  color: #ffffff; 
+  background-color: #0099BC; 
+}
+
+  footer tfoot td {
+    padding: 8px 10px;
+}
+
+footer tfoot a {
+    color: #ffffff;
 }
 
 footer ul { 
   border: thin solid black; 
 }
+
 </style>
-
 </head>
+  
 <body>
-
 
 <header>
 <div id="branding">
@@ -206,7 +214,7 @@ footer ul {
 
 <table>
 <tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
-<tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td>
+  <tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td></tr>
 </table>
 {{ end }}
 
@@ -273,7 +281,7 @@ footer ul {
 
 <table>
 <tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
-<tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td>
+  <tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td></tr>
 </table>
 
 {{ end }}
@@ -315,7 +323,7 @@ footer ul {
 <table class="signature">
 <tr><td><strong>{{ $value.Name }}</strong></td></tr>
 <tr><td>{{ $value.Role }}</td></tr>
-<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
+  <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
 </table>
 {{ end }}
 {{ end }}
@@ -329,7 +337,7 @@ footer ul {
 <table class="signature">
 <tr><td><strong>{{ $value.Name }}</strong></td></tr>
 <tr><td>{{ $value.Role }}</td></tr>
-<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
+  <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
 </table>
 {{ end }}
 {{ end }}
