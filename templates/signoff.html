@@ -70,7 +70,7 @@ tfoot {
 }
 
 #reference {
-  flow: static(reference-html);
+  flow: static(reference-html, start);
   font-size: 12px;
   text-align: right;
 }
@@ -141,7 +141,7 @@ article td:nth-child(3) {
 }
 
 footer {
-  flow: static(footer, start);
+  flow: static(endorsement, start);
   font-size: 10px;
   margin-top: 15px;
 }
@@ -195,9 +195,10 @@ padding: 8px 10px;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
 	@top-left { content: flow(header); }
 	@top-right { content: flow(reference-html); }
-	@bottom { 
-    content: flow(footer); 
-    /* content: "Page " counter(page) " of " counter(pages); */
+	@bottom { content: flow(endorsement); }
+  @bottom-center {
+    content: "Page " counter(page) " of " counter(pages);
+    font-size: 10px;
   }
 }
   
@@ -296,11 +297,17 @@ padding: 8px 10px;
 <article>
 <h2>Room {{ increment $index }} - {{ $value.Name }}</h2>
 
-
 <table>
-<tr><td>Cases</td><td>{{ len $value.Cases }}</td><td>Inventory items</td><td>{{ len $value.Inventory }}</td></tr>
+  <tr>
+    <td>Cases</td>
+    <td>{{ len $value.Cases }}</td>
+    <td>Inventory items</td>
+    <td>{{ len $value.Inventory }}</td>
+  </tr>
 <tfoot>
-<tr><td colspan="2">Description</td><td colspan="2">{{ $value.Description }}</td></tr>
+  <tr>
+    <td colspan="2">Description</td>
+    <td colspan="2">{{ $value.Description }}</td></tr>
 </tfoot>
 </table>
 
@@ -315,20 +322,28 @@ padding: 8px 10px;
 
 {{ if $value.Cases }}
 <section>
-<h3>Reported issues with the {{ $value.Name }}</h3>
-{{ range $value.Cases }}
-<h4>{{ .Title }}</h4>
-<div class="images">
-{{ range .Images }}
-<figure>
-<img alt="" src="{{ . }}">
-</figure>
-{{ end }}
-</div>
+  <h3>Reported issues with the {{ $value.Name }}</h3>
+  {{ range $value.Cases }}
+  <h4>{{ .Title }}</h4>
+    <div class="images">
+      {{ range .Images }}
+      <figure>
+        <img alt="" src="{{ . }}">
+      </figure>
+      {{ end }}
+    </div>
 
 <table>
-<tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
-  <tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td></tr>
+  <tr>
+    <td>Category</td>
+    <td>{{ .Category }}</td>
+    <td>Status</td>
+    <td>{{ .Status }}</td>
+  </tr>
+  <tr>
+    <td colspan="2">Details</td>
+    <td colspan="2">{{ .Details }}</td>
+  </tr>
 </table>
 
 {{ end }}
