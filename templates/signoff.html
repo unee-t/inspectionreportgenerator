@@ -267,7 +267,11 @@ footer ul { border: thin solid black; }
 <table class="signature">
 <tr><td><strong>{{ $value.Name }}</strong></td></tr>
 <tr><td>{{ $value.Role }}</td></tr>
+{{ if $value.DataURI }}
 <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
+{{ else }}
+<tr><td>UNSIGNED</tr>
+{{ end }}
 </table>
 {{ end }}
 {{ end }}
@@ -281,7 +285,11 @@ footer ul { border: thin solid black; }
 <table class="signature">
 <tr><td><strong>{{ $value.Name }}</strong></td></tr>
 <tr><td>{{ $value.Role }}</td></tr>
+{{ if $value.DataURI }}
 <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
+{{ else }}
+<tr><td>UNSIGNED</tr>
+{{ end }}
 </table>
 {{ end }}
 {{ end }}
