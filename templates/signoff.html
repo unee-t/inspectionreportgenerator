@@ -1,29 +1,102 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,minimum-scale=1">
 <title>Unit Inspection Report</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900" rel="stylesheet">
 <style>
 html {
-	font-family: 'Roboto', sans-serif;
-	font-size: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
 }
 
-.signatures { border: thin solid #0099BC; padding: 10px; margin: 10px; }
-section#signatures, .involved { display: flex; }
-table { width: 100% }
-tfoot { padding-top: 0.5em; }
+@media screen and (min-width: 800px) {
+	body { padding: 7vmin; }
+}
 
-table.signature { width: 20%; }
-table.signature img { height: 50px; }
+header {
+	position: relative;
+  flow: static(header);
+  margin-bottom: 30px;
+}
+
+header img {
+	position: absolute;
+}
+
+header h1 {
+	font-weight: bold;
+	font-size: 21px;
+	padding-left: 60px;
+	margin-bottom: 0;
+	padding: 8px 0 0 60px;
+	margin: 0 0 5px;
+}
+
+header p {
+	font-weight: bold;
+	font-size: 16px;
+	padding-left: 60px;
+	margin: 0;
+}
+
+h2 {
+  background-color:rgba(0, 153, 188, 0.12);
+  font-size: 18px;
+  text-transform: uppercase;
+  padding: 8px;
+  font-weight: 900;
+  font-weight: bold;
+}
+
+h3 {
+  text-transform: uppercase;
+  border-bottom: thin solid #0095B6;
+  padding-bottom: 5px;
+  margin-top: 20px;
+  color: #4D676E;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 16px;
+  margin: 0;
+}
+
+p {
+  font-size: 12px;
+  margin-top: 0;
+}
+
+table {
+  width: 100%
+}
+
+tfoot {
+  padding-top: 0.5em;
+}
+
+#reference {
+  flow: static(reference-html, start);
+  font-size: 12px;
+  text-align: right;
+}
+
+@media screen {
+	#reference { display: block; }
+}
 
 .images {
 	display: flex;
 	flex-flow: row wrap;
 	box-sizing: border-box;
+}
+
+.images:last-child {
+  border-bottom: 0;
 }
 
 .images figure {
@@ -37,96 +110,166 @@ table.signature img { height: 50px; }
 	max-width: 100%;
 }
 
-.signatures p { text-transform: uppercase; color: #4D676E; }
+.item {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 15px;
+}
+
+#allsignatures {
+  flow: static(allsignatures, start);
+  font-size: 10px;
+  margin-top: 20px;
+  width: 60%;
+}
+
+#allsignatures, .involved {
+  display: flex;
+}
+
+.signatures {
+  border: thin solid #0099BC;
+  padding: 10px 5px;
+  margin: 0 10px 10px 0;
+  width: 100%;
+}
+
+.signatures:last-child {
+  margin-right: 0;
+}
+
+#allsignatures .signature .name {
+  font-size: 12px;
+}
+
+.signatures p {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #4D676E;
+  margin: 0 0 5px;
+}
+
+#allsignatures table,
+footer table {
+  border-spacing: 0;
+}
+
+table.signature {
+  width: 20%;
+}
+
+table.signature img {
+  height: 50px;
+}
 
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
-@media screen and (min-width: 800px) {
-	body { padding: 7vmin; }
+article td:nth-child(1),
+article td:nth-child(3) {
+  text-transform: uppercase;
+  color: #4D676E;
+  font-weight: bold;
 }
 
-@media screen {
-	#reference { display: none; }
+footer ul {
+  border: thin solid black;
 }
 
-article td:nth-child(1), article td:nth-child(3) {  text-transform: uppercase; color: #4D676E; font-weight: bold; }
-
-h3 { text-transform: uppercase; border-bottom: thin solid #0095B6; color: #4D676E; font-size: 10px; font-weight: bold; }
-h2 { background-color:rgba(0, 153, 188, 0.12); font-size: 11px; padding: 0.7em; font-weight: 900; }
-footer tfoot { color: white; background-color: #0099BC; }
-footer table { border-spacing: 0; }
-
-footer {
-	flow: static(footer, start);
+.promotion {
+  background: #e5e5e5;
+  font-size: 10px;
 }
 
-#reference {
-	flow: static(reference-html);
-	font-size: 8px;
-	text-align: right;
+.promotion td {
+padding: 10px;
 }
 
-header {
-	position: relative;
-	flow: static(header);
+.promotion img {
+  float: left;
+  display: block;
+  margin-right: 8px;
+  margin-top: 5px;
+  margin-bottom: 8px;
 }
 
-header img {
-	position: absolute;
+.promotion p strong {
+  text-transform: uppercase;
+  color: #0099BC;
+  font-size: 12px;
 }
 
-header h1 {
-	font-weight: bold;
-	font-size: 21px;
-	margin: 0;
-	padding-left: 50px;
+.promotion a {
+  text-decoration: none;
+  color: #0099BC;
 }
 
-header p {
-	margin-top: 10px;
-	font-weight: bold;
-	font-size: 16px;
-	padding-left: 50px;
+.promotion tfoot {
+  color: #ffffff;
+  background-color: #0099BC;
+}
+
+.promotion tfoot a {
+  color: #fff;
+  text-decoration: underline;
 }
 
 @page {
 	size: A4;
 	font-family: 'Roboto', sans-serif;
 	margin-top: 100px; /* header height */
-	margin-bottom: 280px; /* footer height */
+	margin-bottom: 200px; /* footer height */
+	margin-left: 50px;
+	margin-right: 50px;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
-	@bottom-right { content: "Page " counter(page) " of " counter(pages); }
-	@top-right { content: flow(reference-html); }
-	@top-left { content: flow(header); }
-	@bottom { content: flow(footer); }
+	@top-left {
+		content: flow(header);
+		margin-top: 20px;
+		margin-bottom: 15px;
+	}
+	@top-right {
+		content: flow(reference-html);
+		margin-top: 15px;
+	}
+	@bottom { content: flow(allsignatures); margin-left: 100px; }
+	@bottom-right {
+		margin-top: 100px;
+		content: "Page " counter(page) " of " counter(pages);
+		font-size: 10px;
+	}
 }
 
-footer ul { border: thin solid black; }
 </style>
-
 </head>
+
 <body>
 
-<span id=reference>Reference: <a href="http://case.unee-t.com/i/{{ .ID }}">{{ .ID }}</a><br>Created on: {{ formatDate .Date }}</span>
-
 <header>
-<img alt="Logo" width="44" height="58" src="https://media.dev.unee-t.com/2018-08-15/logo.svg">
-<h1>Unit Inspection Report</h1>
-<p>Handover of unit - {{ .Report.Name }}</p>
+<div id="branding">
+  <img alt="Logo" width="44" height="58" src="https://media.dev.unee-t.com/2018-08-15/logo.svg">
+  <h1>Unit Inspection Report</h1>
+<p>{{ .Report.Name }}</p>
+</div>
+<div id="reference">
+	Reference: <a href="http://case.unee-t.com/i/{{ .ID }}">{{ .ID }}</a><br>Created on: {{ formatDate .Date }}
+</div>
+
 </header>
 
 <article class="unit">
+<section id="unit-info">
 <h2>Unit Information</h2>
 
 <table>
-<tr><td>Unit Name</td><td>{{ .Unit.Information.Name }}</td><td>Address</td><td>{{ .Unit.Information.Address }}</td></tr>
-<tr><td>Unit Type</td><td>{{ .Unit.Information.Type }}</td><td>Zip/Postal code</td><td>{{ .Unit.Information.Postcode }}</td></tr>
-<tr><td></td><td></td><td>Country</td><td>{{ .Unit.Information.Country }}</td></tr>
-<tr><td></td><td></td><td>City</td><td>{{ .Unit.Information.City }}</td></tr>
-<tr><td></td><td></td><td>State</td><td>{{ .Unit.Information.State }}</td></tr>
-<tfoot>
-<tr><td colspan="2">Unit description</td><td colspan="2">{{ .Unit.Information.Description }}</td></tr>
-</tfoot>
+<tr><td width="150">Unit Name</td><td>{{ .Unit.Information.Name }}</td></tr>
+<tr><td>Unit Type</td><td>{{ .Unit.Information.Type }}</td></tr>
+<tr><td>Address</td><td>{{ .Unit.Information.Address }}</td></tr>
+<tr><td>City</td><td>{{ .Unit.Information.City }}</td></tr>
+<tr><td>Zip/Postal code</td><td>{{ .Unit.Information.Postcode }}</td></tr>
+<tr><td>State</td><td>{{ .Unit.Information.State }}</td></tr>
+<tr><td>Country</td><td>{{ .Unit.Information.Country }}</td></tr>
+<tr><td>Unit description</td><td>{{ .Unit.Information.Description }}</td></tr>
+<tr><td>Additional comments</td><td>{{ .Report.Comments }}</td></tr>
 </table>
 
 <div class="images">
@@ -136,18 +279,19 @@ footer ul { border: thin solid black; }
 </figure>
 {{ end }}
 </div>
+</section>
 
-<table>
-<tr><td>Additional comments</td><td>{{ .Report.Comments }}</td></tr>
-</table>
-
-
-<section>
+<section id="unit-reported-issue">
 <h3>Reported issues with the unit</h3>
 
 {{ range .Report.Cases }}
+<div class="item">
 <h4>{{ .Title }}</h4>
-
+<table>
+<tr><td width="120">Category</td><td>{{ .Category }}</td></tr>
+<tr><td>Status</td><td>{{ .Status }}</td></tr>
+<tr><td>Details</td><td>{{ .Details }}</td></tr>
+</table>
 <div class="images">
 {{ range .Images }}
 <figure>
@@ -155,20 +299,16 @@ footer ul { border: thin solid black; }
 </figure>
 {{ end }}
 </div>
-
-<table>
-<tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
-<tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td>
-</table>
 {{ end }}
-
+</div>
 </section>
 
 <h3>Inventory for unit</h3>
 <section>
 {{ range .Report.Inventory }}
-<h4>{{ .Name }}</h4>
 <div class="item">
+<h4>{{ .Name }}</h4>
+<p>{{ .Description }}</p>
 <div class="images">
 {{ range .Images }}
 <figure>
@@ -176,13 +316,6 @@ footer ul { border: thin solid black; }
 </figure>
 {{ end }}
 </div>
-
-<table>
-<tfoot>
-<tr><td>Description</td><td>{{ .Description }}</td></tr>
-</tfoot>
-</table>
-
 </div>
 {{ end }}
 </section>
@@ -193,14 +326,19 @@ footer ul { border: thin solid black; }
 <article>
 <h2>Room {{ increment $index }} - {{ $value.Name }}</h2>
 
-
 <table>
-<tr><td>Cases</td><td>{{ len $value.Cases }}</td><td>Inventory items</td><td>{{ len $value.Inventory }}</td></tr>
-<tfoot>
-<tr><td colspan="2">Description</td><td colspan="2">{{ $value.Description }}</td></tr>
-</tfoot>
+  <tr>
+    <td width="120">Cases</td>
+    <td>{{ len $value.Cases }}</td>
+    </tr>
+    <tr>
+    <td>Inventory items</td>
+    <td>{{ len $value.Inventory }}</td>
+  </tr>
+  <tr>
+    <td>Description</td>
+    <td>{{ $value.Description }}</td></tr>
 </table>
-
 
 <div class="images">
 {{ range $value.Images }}
@@ -212,22 +350,32 @@ footer ul { border: thin solid black; }
 
 {{ if $value.Cases }}
 <section>
-<h3>Reported issues with the {{ $value.Name }}</h3>
-{{ range $value.Cases }}
-<h4>{{ .Title }}</h4>
-<div class="images">
-{{ range .Images }}
-<figure>
-<img alt="" src="{{ . }}">
-</figure>
-{{ end }}
-</div>
-
-<table>
-<tr><td>Category</td><td>{{ .Category }}</td><td>Status</td><td>{{ .Status }}</td></tr>
-<tr><td colspan="2">Details</td><td colspan="2">{{ .Details }}</td>
+  <h3>Reported issues with the {{ $value.Name }}</h3>
+  {{ range $value.Cases }}
+  <div class="item">
+  <h4>{{ .Title }}</h4>
+  <table>
+  <tr>
+    <td width="120">Category</td>
+    <td>{{ .Category }}</td>
+    </tr>
+    <tr>
+      <td>Status</td>
+      <td>{{ .Status }}</td>
+    </tr>
+  <tr>
+    <td>Details</td>
+    <td>{{ .Details }}</td>
+  </tr>
 </table>
-
+    <div class="images">
+      {{ range .Images }}
+      <figure>
+        <img alt="" src="{{ . }}">
+      </figure>
+      {{ end }}
+    </div>
+</div>
 {{ end }}
 </section>
 {{ end }}
@@ -236,7 +384,10 @@ footer ul { border: thin solid black; }
 <h3>Inventory for {{ $value.Name }}</h3>
 <section>
 {{ range $value.Inventory }}
+<div class="item">
 <h4>{{ .Name }}</h4>
+<p>{{ .Description }}</p>
+
 <div class="images">
 {{ range .Images }}
 <figure>
@@ -244,34 +395,22 @@ footer ul { border: thin solid black; }
 </figure>
 {{ end }}
 </div>
-
-<table>
-<tfoot>
-<tr><td>Description</td><td>{{ .Description }}</td></tr>
-</tfoot>
-</table>
-
+</div>
 {{ end }}
 </section>
 {{ end }}
 </article>
 {{ end }}
 
-<footer>
-
-<section id="signatures">
+<section id="allsignatures">
 <div class="signatures">
 <p>Report created by</p>
 {{ range $index, $value := .Signatures }}
 {{if eq $index 0 }}
 <table class="signature">
-<tr><td><strong>{{ $value.Name }}</strong></td></tr>
-<tr><td>{{ $value.Role }}</td></tr>
-{{ if $value.DataURI }}
-<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
-{{ else }}
-<tr><td>UNSIGNED</tr>
-{{ end }}
+<tr><td><span class="name"><strong>{{ $value.Name }}</strong></span></td></tr>
+<tr><td><span class="role">{{ $value.Role }}</span></td></tr>
+  <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
 </table>
 {{ end }}
 {{ end }}
@@ -283,13 +422,9 @@ footer ul { border: thin solid black; }
 {{ range $index, $value := .Signatures }}
 {{if ne $index 0 }}
 <table class="signature">
-<tr><td><strong>{{ $value.Name }}</strong></td></tr>
-<tr><td>{{ $value.Role }}</td></tr>
-{{ if $value.DataURI }}
-<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></tr>
-{{ else }}
-<tr><td>UNSIGNED</tr>
-{{ end }}
+<tr><td><span class="name"><strong>{{ $value.Name }}</strong></span></td></tr>
+<tr><td><span class="role">{{ $value.Role }}</span></td></tr>
+  <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
 </table>
 {{ end }}
 {{ end }}
@@ -297,25 +432,29 @@ footer ul { border: thin solid black; }
 </div>
 </section>
 
-<table class="footer">
-<thead><tr><th>Smarter way to manage issues</th><th>Available everywhere</th><th></th></tr></thead>
-
+<footer>
+<table class="promotion">
 <tbody>
-<tr>
-<td><img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_smarterway.png">Easily capture issues, communicate and agree on the next steps with everyone on the same page</td>
-<td><img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_available_anywhere.png">Unee-T is a cloud based application. Access your cases on your devices whenever and wherever you need them</td>
-<td><strong>Get your FREE account at unee-t.com</strong></td>
-</tr>
+  <tr>
+    <td width="50%">
+      <img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_smarterway.png">
+        <p><strong>Smarter way to manage issues</strong><br />
+        Easily capture issues, communicate and agree on the next steps with everyone on the same page</p>
+      </td>
+      <td width="50%">
+        <img alt="" src="https://media.dev.unee-t.com/2018-08-08/ico_available_anywhere.png">
+        <p><strong>Available everywhere</strong><br />
+        Unee-T is a cloud based application. Access your cases on your devices whenever and wherever you need them</p>
+        </td>
+  </tr>
 </tbody>
 
 <tfoot>
 <tr>
-<td>Generated by Unee-T | Smarter Unit Management</td>
-<td>This report is also available online: <a href="http://case.unee-t.com/i/{{ .ID }}">http://case.unee-t.com/i/{{ .ID }}</a></td>
-<td></td>
+<td>Generated by <a href="https://unee-t.com">Unee-T.com</a> | Smarter Unit Management</td>
+<td style="text-align: right;">This report is also available online: <a href="http://case.unee-t.com/i/{{ .ID }}">http://case.unee-t.com/i/{{ .ID }}</a></td>
 </tr>
 </tfoot>
-
 </table>
 
 </footer>
