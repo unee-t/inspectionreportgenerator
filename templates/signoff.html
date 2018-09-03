@@ -6,7 +6,7 @@
 <title>Unit Inspection Report</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900" rel="stylesheet">
-<style>
+<style>  
 html {
   font-family: 'Roboto', sans-serif;
   font-size: 12px;
@@ -43,27 +43,27 @@ header p {
 }
 
 h2 {
-  background-color:rgba(0, 153, 188, 0.12);
+  background-color:rgba(0, 153, 188, 0.12); 
   font-size: 18px;
   text-transform: uppercase;
   padding: 8px;
-  font-weight: 900;
+  font-weight: 900; 
   font-weight: bold;
 }
 
 h3 {
-  text-transform: uppercase;
-  border-bottom: thin solid #0095B6;
+  text-transform: uppercase; 
+  border-bottom: thin solid #0095B6; 
   padding-bottom: 5px;
   margin-top: 20px;
   color: #4D676E;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 16px; 
+  font-weight: bold; 
 }
 
 h4 {
   font-size: 16px;
-  margin: 0;
+  margin: 0 0 8px; 
 }
 
 p {
@@ -71,12 +71,14 @@ p {
   margin-top: 0;
 }
 
-table {
-  width: 100%
+table { 
+  width: 100%;
+  border-spacing: 0;
+  border: 0;
 }
-
+  
 tfoot {
-  padding-top: 0.5em;
+  padding-top: 0.5em; 
 }
 
 #reference {
@@ -89,10 +91,30 @@ tfoot {
 	#reference { display: block; }
 }
 
+#unit-info td:first-child {
+  width: 150px;
+}
+
+.item {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 15px;
+}
+
+.item td:first-child {
+  width: 120px;
+}
+
+.item:last-child {
+  border-bottom: 0;
+}
+
 .images {
 	display: flex;
 	flex-flow: row wrap;
 	box-sizing: border-box;
+  margin-top: 10px;
 }
 
 .images:last-child {
@@ -110,27 +132,18 @@ tfoot {
 	max-width: 100%;
 }
 
-.item {
-  margin-top: 15px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 15px;
-}
-
 #allsignatures {
-  flow: static(allsignatures, start);
   font-size: 10px;
   margin-top: 20px;
-  width: 60%;
 }
 
-#allsignatures, .involved {
+#allsignatures, .involved { 
   display: flex;
 }
 
-.signatures {
-  border: thin solid #0099BC;
-  padding: 10px 5px;
+.signatures { 
+  border: thin solid #0099BC; 
+  padding: 10px 5px; 
   margin: 0 10px 10px 0;
   width: 100%;
 }
@@ -139,41 +152,37 @@ tfoot {
   margin-right: 0;
 }
 
-#allsignatures .signature .name {
+#signatures .signature .name {
   font-size: 12px;
 }
 
-.signatures p {
+.signatures p { 
   text-transform: uppercase;
   font-weight: bold;
   color: #4D676E;
   margin: 0 0 5px;
 }
 
-#allsignatures table,
-footer table {
-  border-spacing: 0;
+table.signature { 
+  width: 20%; 
 }
 
-table.signature {
-  width: 20%;
+table.signature img { 
+  height: 50px; 
 }
-
-table.signature img {
-  height: 50px;
-}
-
+  
 /* https://www.figma.com/file/LPv1IUfOtu4YdsBBi4bXiANx/Unee-T-Inspection-Report-v3-01?node-id=0%3A121 */
 
-article td:nth-child(1),
+article td:nth-child(1), 
 article td:nth-child(3) {
-  text-transform: uppercase;
-  color: #4D676E;
-  font-weight: bold;
+  text-transform: uppercase; 
+  color: #4D676E; 
+  font-weight: bold; 
 }
 
-footer ul {
-  border: thin solid black;
+#signatures table,
+footer table { 
+  border-spacing: 0; 
 }
 
 .promotion {
@@ -204,44 +213,57 @@ padding: 10px;
   color: #0099BC;
 }
 
-.promotion tfoot {
-  color: #ffffff;
-  background-color: #0099BC;
+footer {
+  flow: static(footer, start);
 }
 
-.promotion tfoot a {
+footer table {
+  background: #0099BC;
+}
+
+footer td {
+  padding: 8px 10px;
+  color: #fff;
+  font-size: 10px;
+}
+
+footer a {
   color: #fff;
   text-decoration: underline;
+}
+
+.pager {
+  content: "Page " counter(page) " of " counter(pages);
+  font-size: 10px;
+  text-align: center;
+  margin: 10px 0 20px 0;
 }
 
 @page {
 	size: A4;
 	font-family: 'Roboto', sans-serif;
 	margin-top: 100px; /* header height */
-	margin-bottom: 200px; /* footer height */
-	margin-left: 50px;
-	margin-right: 50px;
+	margin-bottom: 100px; /* footer height */
+  margin-left: 50px;
+  margin-right: 50px;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
-	@top-left {
-		content: flow(header);
-		margin-top: 20px;
-		margin-bottom: 15px;
-	}
-	@top-right {
-		content: flow(reference-html);
-		margin-top: 15px;
-	}
-	@bottom { content: flow(allsignatures); margin-left: 100px; }
-	@bottom-right {
-		margin-top: 100px;
-		content: "Page " counter(page) " of " counter(pages);
-		font-size: 10px;
-	}
+	@top-left { 
+    content: flow(header);
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+	@top-right { 
+    content: flow(reference-html);
+    margin-top: 15px;
+  }
+  @bottom-center { 
+    content: flow(footer); 
+  }
 }
-
+  
 </style>
 </head>
-
+  
 <body>
 
 <header>
@@ -261,7 +283,7 @@ padding: 10px;
 <h2>Unit Information</h2>
 
 <table>
-<tr><td width="150">Unit Name</td><td>{{ .Unit.Information.Name }}</td></tr>
+<tr><td>Unit Name</td><td>{{ .Unit.Information.Name }}</td></tr>
 <tr><td>Unit Type</td><td>{{ .Unit.Information.Type }}</td></tr>
 <tr><td>Address</td><td>{{ .Unit.Information.Address }}</td></tr>
 <tr><td>City</td><td>{{ .Unit.Information.City }}</td></tr>
@@ -432,7 +454,6 @@ padding: 10px;
 </div>
 </section>
 
-<footer>
 <table class="promotion">
 <tbody>
   <tr>
@@ -448,15 +469,16 @@ padding: 10px;
         </td>
   </tr>
 </tbody>
+</table>
 
-<tfoot>
+<footer>
+<table>
 <tr>
 <td>Generated by <a href="https://unee-t.com">Unee-T.com</a> | Smarter Unit Management</td>
 <td style="text-align: right;">This report is also available online: <a href="http://case.unee-t.com/i/{{ .ID }}">http://case.unee-t.com/i/{{ .ID }}</a></td>
 </tr>
-</tfoot>
 </table>
-
+<div class="pager"></div>
 </footer>
 
 </body>
