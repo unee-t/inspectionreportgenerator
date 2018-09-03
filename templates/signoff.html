@@ -243,7 +243,7 @@ footer a {
 	size: A4;
 	font-family: 'Roboto', sans-serif;
 	margin-top: 100px; /* header height */
-	margin-bottom: 100px; /* footer height */
+	margin-bottom: 150px; /* footer height */
   margin-left: 50px;
   margin-right: 50px;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
@@ -310,7 +310,7 @@ footer a {
 <div class="item">
 <h4>{{ .Title }}</h4>
 <table>
-<tr><td width="120">Category</td><td>{{ .Category }}</td></tr>
+<tr><td>Category</td><td>{{ .Category }}</td></tr>
 <tr><td>Status</td><td>{{ .Status }}</td></tr>
 <tr><td>Details</td><td>{{ .Details }}</td></tr>
 </table>
@@ -350,7 +350,7 @@ footer a {
 
 <table>
   <tr>
-    <td width="120">Cases</td>
+    <td>Cases</td>
     <td>{{ len $value.Cases }}</td>
     </tr>
     <tr>
@@ -378,7 +378,7 @@ footer a {
   <h4>{{ .Title }}</h4>
   <table>
   <tr>
-    <td width="120">Category</td>
+    <td>Category</td>
     <td>{{ .Category }}</td>
     </tr>
     <tr>
