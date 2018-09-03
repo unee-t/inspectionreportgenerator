@@ -243,7 +243,7 @@ footer a {
 	size: A4;
 	font-family: 'Roboto', sans-serif;
 	margin-top: 100px; /* header height */
-	margin-bottom: 150px; /* footer height */
+	margin-bottom: 200px; /* footer height */
   margin-left: 50px;
   margin-right: 50px;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
@@ -424,7 +424,7 @@ footer a {
 </article>
 {{ end }}
 
-<section id="allsignatures">
+<div id="allsignatures">
 <div class="signatures">
 <p>Report created by</p>
 {{ range $index, $value := .Signatures }}
@@ -452,7 +452,7 @@ footer a {
 {{ end }}
 </div>
 </div>
-</section>
+</div>
 
 <table class="promotion">
 <tbody>
