@@ -270,7 +270,7 @@ footer a {
 <div id="branding">
   <img alt="Logo" width="44" height="58" src="https://media.dev.unee-t.com/2018-08-15/logo.svg">
   <h1>Unit Inspection Report</h1>
-<p>Handover of unit - {{ .Report.Name }}</p>
+<p>{{ .Report.Name }}</p>
 </div>
 <div id="reference">
 	Reference: <a href="http://case.unee-t.com/i/{{ .ID }}">{{ .ID }}</a><br>Created on: {{ formatDate .Date }}
