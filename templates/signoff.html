@@ -9,7 +9,7 @@
 <style>  
 html {
   font-family: 'Roboto', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 @media screen and (min-width: 800px) {
@@ -19,7 +19,7 @@ html {
 header {
 	position: relative;
   flow: static(header);
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 header img {
@@ -31,38 +31,41 @@ header h1 {
 	font-size: 21px;
 	padding-left: 60px;
 	margin-bottom: 0;
-	padding: 8px 0 0 60px;
+	padding: 6px 0 0 65px;
 	margin: 0 0 5px;
 }
 
 header p {
 	font-weight: bold;
 	font-size: 16px;
-	padding-left: 60px;
+	padding-left: 65px;
 	margin: 0;
+	
 }
 
 h2 {
   background-color:rgba(0, 153, 188, 0.12); 
-  font-size: 18px;
-  text-transform: uppercase;
-  padding: 8px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: capitalize;
+  padding: 6px;
   font-weight: 900; 
   font-weight: bold;
 }
 
 h3 {
-  text-transform: uppercase; 
+  text-transform: capitalize; 
   border-bottom: thin solid #0095B6; 
+  letter-spacing: 0.5px;
   padding-bottom: 5px;
   margin-top: 20px;
   color: #4D676E;
-  font-size: 16px; 
+  font-size: 14px; 
   font-weight: bold; 
 }
 
 h4 {
-  font-size: 16px;
+  font-size: 14px;
   margin: 0 0 8px; 
 }
 
@@ -83,7 +86,7 @@ tfoot {
 
 #reference {
   flow: static(reference-html, start);
-  font-size: 12px;
+  font-size: 10px;
   text-align: right;
 }
 
@@ -93,6 +96,7 @@ tfoot {
 
 #unit-info td:first-child {
   width: 150px;
+  height: 15px;
 }
 
 .item {
@@ -103,7 +107,8 @@ tfoot {
 }
 
 .item td:first-child {
-  width: 120px;
+  width: 150px;
+  height: 15px;
 }
 
 .item:last-child {
@@ -143,7 +148,7 @@ tfoot {
 
 .signatures { 
   border: thin solid #0099BC; 
-  padding: 10px 5px; 
+  padding: 10px 10px; 
   margin: 0 10px 10px 0;
   width: 100%;
 }
@@ -157,14 +162,14 @@ tfoot {
 }
 
 .signatures p { 
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-weight: bold;
   color: #4D676E;
   margin: 0 0 5px;
 }
 
 table.signature { 
-  width: 20%; 
+  width: 25%; 
 }
 
 table.signature img { 
@@ -175,9 +180,10 @@ table.signature img {
 
 article td:nth-child(1), 
 article td:nth-child(3) {
-  text-transform: uppercase; 
+  text-transform: capitalize; 
   color: #4D676E; 
-  font-weight: bold; 
+  font-weight: bold;
+  height: 15px;
 }
 
 #signatures table,
@@ -185,27 +191,30 @@ footer table {
   border-spacing: 0; 
 }
 
-.promotion {
-  background: #e5e5e5;
+.promotion p {
   font-size: 10px;
+  line-height: 1.3;
 }
 
 .promotion td {
-padding: 10px;
+background: #f2f2f2;
+padding: 6px 15px 4px 12px;
 }
 
 .promotion img {
   float: left;
   display: block;
-  margin-right: 8px;
-  margin-top: 5px;
-  margin-bottom: 8px;
+  margin-right: 12px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .promotion p strong {
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: #0099BC;
   font-size: 12px;
+  letter-spacing: 0.2px;
+  line-height: 1.8;
 }
 
 .promotion a {
@@ -242,15 +251,15 @@ footer a {
 @page {
 	size: A4;
 	font-family: 'Roboto', sans-serif;
-	margin-top: 100px; /* header height */
+	margin-top: 120px; /* header height */
 	margin-bottom: 150px; /* footer height */
   margin-left: 50px;
   margin-right: 50px;
 	/* https://drafts.csswg.org/css-page-3/#at-ruledef-bottom-right */
 	@top-left { 
     content: flow(header);
-    margin-top: 20px;
-    margin-bottom: 15px;
+    margin-top: 35px;
+    margin-bottom: 10px;
   }
 	@top-right { 
     content: flow(reference-html);
@@ -285,11 +294,13 @@ footer a {
 <table>
 <tr><td>Unit Name</td><td>{{ .Unit.Information.Name }}</td></tr>
 <tr><td>Unit Type</td><td>{{ .Unit.Information.Type }}</td></tr>
+<tr><td></td></tr>
 <tr><td>Address</td><td>{{ .Unit.Information.Address }}</td></tr>
-<tr><td>City</td><td>{{ .Unit.Information.City }}</td></tr>
+<tr><td>City</td><td>{{ .Unit.Information.City }}</td></tr> 
 <tr><td>Zip/Postal code</td><td>{{ .Unit.Information.Postcode }}</td></tr>
 <tr><td>State</td><td>{{ .Unit.Information.State }}</td></tr>
 <tr><td>Country</td><td>{{ .Unit.Information.Country }}</td></tr>
+<tr><td></td></tr>
 <tr><td>Unit description</td><td>{{ .Unit.Information.Description }}</td></tr>
 <tr><td>Additional comments</td><td>{{ .Report.Comments }}</td></tr>
 </table>
@@ -346,6 +357,7 @@ footer a {
 
 {{ range $index, $value := .Report.Rooms }}
 <article>
+	
 <h2>Room {{ increment $index }} - {{ $value.Name }}</h2>
 
 <table>
