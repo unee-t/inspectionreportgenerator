@@ -96,7 +96,7 @@ tfoot {
 
 #unit-info td:first-child {
   width: 150px;
-  height: 12px;
+  height: 15px;
 }
 
 .item {
@@ -108,7 +108,7 @@ tfoot {
 
 .item td:first-child {
   width: 150px;
-  height: 12px;
+  height: 15px;
 }
 
 .item:last-child {
@@ -288,14 +288,13 @@ footer a {
 </header>
 
 <article class="unit">
-<section id="unit-info">
+<section id="unit-unitinfo">
 <h2>Unit Information</h2>
 
 <table>
 <tr><td>Unit Name</td><td>{{ .Unit.Information.Name }}</td></tr>
 <tr><td>Unit Type</td><td>{{ .Unit.Information.Type }}</td></tr>
 <tr><td></td></tr>
-<tr><td>Address</td><td>{{ .Unit.Information.Address }}</td></tr>
 <tr><td>City</td><td>{{ .Unit.Information.City }}</td></tr> 
 <tr><td>Zip/Postal code</td><td>{{ .Unit.Information.Postcode }}</td></tr>
 <tr><td>State</td><td>{{ .Unit.Information.State }}</td></tr>
