@@ -95,7 +95,7 @@ tfoot {
 }
 
 #unit-info td:first-child {
-  width: 150px;
+  width: 120px;
   height: 12px;
 }
 
@@ -107,7 +107,7 @@ tfoot {
 }
 
 .item td:first-child {
-  width: 150px;
+  width: 100px;
   height: 12px;
 }
 
@@ -265,8 +265,8 @@ footer a {
     content: flow(reference-html);
     margin-top: 15px;
   }
-  @bottom-center { 
-    content: flow(footer); 
+  @bottom-center {
+    content: flow(footer);
   }
 }
   
@@ -360,6 +360,7 @@ footer a {
 	
 <h2>Room {{ increment $index }} - {{ $value.Name }}</h2>
 
+<div class="item">
 <table>
   <tr>
     <td>Cases</td>
@@ -373,6 +374,7 @@ footer a {
     <td>Description</td>
     <td>{{ $value.Description }}</td></tr>
 </table>
+</div>
 
 <div class="images">
 {{ range $value.Images }}
@@ -436,6 +438,7 @@ footer a {
 </article>
 {{ end }}
 
+<div id="prefooter">
 <div id="allsignatures">
 <div class="signatures">
 <p>Report created by</p>
@@ -449,6 +452,7 @@ footer a {
 {{ end }}
 {{ end }}
 </div>
+
 
 <div class="signatures">
 <p>People involved</p>
@@ -482,6 +486,7 @@ footer a {
   </tr>
 </tbody>
 </table>
+</div>
 
 <footer>
 <table>
