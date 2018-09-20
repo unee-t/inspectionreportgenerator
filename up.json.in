@@ -25,12 +25,13 @@
       }
     ]
   },
-
-    "actions": [
+  "actions": [
     {
       "name": "email.backend",
       "type": "email",
-      "emails": ["kai.hendry+pdf@unee-t.com"]
+      "emails": [
+        "kai.hendry+pdf@unee-t.com"
+      ]
     }
   ],
   "alerts": [
@@ -70,7 +71,4 @@
       "description": "Note how you can use AWS namespaces and metrics directly if necessary."
     }
   ]
-
-
-
 }

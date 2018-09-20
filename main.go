@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,7 +13,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
 
@@ -394,20 +395,22 @@ func CloudinaryTransform(url string, transforms string) (transformedURL string, 
 	return uParsed.String(), nil
 }
 
+func randomHex(n int) (string, error) {
+	bytes := make([]byte, n)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
+}
+
 func genHTML(ir InspectionReport) (output responseHTML, err error) {
 
-	var filename = ""
-
-	for _, v := range ir.Signatures {
-		filename += strings.ToLower(v.Name)
+	randomString, err := randomHex(2)
+	if err != nil {
+		return
 	}
 
-	reg, _ := regexp.Compile("[^a-z]+")
-	filename = reg.ReplaceAllString(filename, "")
-
-	if filename == "" {
-		return output, fmt.Errorf("Missing valid names from signatures in order to create filename")
-	}
+	var filename = fmt.Sprintf("%s-%s", ir.ID, randomString)
 
 	ir.Report.Images = updateImages(ir.Report.Images)
 	for item := 0; item < len(ir.Report.Inventory); item++ {
