@@ -295,7 +295,7 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 	svc := s3.New(cfg)
 
 	basename := path.Base(url)
-	filename := time.Now().Format("2006-01-02") + "/" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
+	filename := time.Now().Format("2006-01-02") + "/pdfcool-" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
 	putparams := &s3.PutObjectInput{
 		Bucket:      aws.String(e.Bucket()),
 		Body:        bytes.NewReader(body),
@@ -405,12 +405,8 @@ func randomHex(n int) (string, error) {
 
 func genHTML(ir InspectionReport) (output responseHTML, err error) {
 
-	randomString, err := randomHex(2)
-	if err != nil {
-		return
-	}
-
-	var filename = fmt.Sprintf("%s-%s", ir.ID, randomString)
+	randomString, err := randomHex(4)
+	ir.ID = fmt.Sprintf("%s-%s", ir.ID, randomString)
 
 	ir.Report.Images = updateImages(ir.Report.Images)
 	for item := 0; item < len(ir.Report.Inventory); item++ {
@@ -435,13 +431,16 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 	var t *template.Template
 	var b bytes.Buffer
 
+	templateFuncs := template.FuncMap{
+		"prettyDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+		"ymdDate":    func(d time.Time) string { return d.Format("2006-01-02") },
+		"increment":  func(i int) int { return i + 1 },
+		"domain":     func(s string) string { return e.Udomain(s) },
+	}
+
 	if ir.Template == "" {
 		// Use default template
-		t, err = template.New("").Funcs(template.FuncMap{
-			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
-			"increment":  func(i int) int { return i + 1 },
-			"domain":     func() string { return e.Udomain("case") },
-		}).ParseFiles("templates/signoff.html")
+		t, err = template.New("").Funcs(templateFuncs).ParseFiles("templates/signoff.html")
 
 		if err != nil {
 			return output, err
@@ -457,11 +456,7 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		if err != nil {
 			return output, err
 		}
-		tmpl, err := template.New("").Funcs(template.FuncMap{
-			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
-			"increment":  func(i int) int { return i + 1 },
-			"domain":     func() string { return e.Udomain("case") },
-		}).Parse(string(contents))
+		tmpl, err := template.New("").Funcs(templateFuncs).Parse(string(contents))
 		err = tmpl.Execute(io.Writer(&b), ir)
 	}
 
@@ -475,13 +470,13 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 	}
 	svc := s3.New(cfg)
 
-	dumpurl, err := dump(svc, filename, ir)
+	dumpurl, err := dump(svc, ir.ID, ir)
 	if err != nil {
 		return output, err
 	}
 	log.Infof("dumpurl %s", dumpurl)
 
-	htmlfilename := time.Now().Format("2006-01-02") + "/" + filename + ".html"
+	htmlfilename := time.Now().Format("2006-01-02") + "/" + ir.ID + ".html"
 	putparams := &s3.PutObjectInput{
 		Bucket:      aws.String(e.Bucket()),
 		Body:        bytes.NewReader(b.Bytes()),
