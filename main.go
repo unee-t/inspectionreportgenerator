@@ -440,6 +440,7 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		t, err = template.New("").Funcs(template.FuncMap{
 			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
 			"increment":  func(i int) int { return i + 1 },
+			"domain":     func() string { return e.Udomain("case") },
 		}).ParseFiles("templates/signoff.html")
 
 		if err != nil {
@@ -459,6 +460,7 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		tmpl, err := template.New("").Funcs(template.FuncMap{
 			"formatDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
 			"increment":  func(i int) int { return i + 1 },
+			"domain":     func() string { return e.Udomain("case") },
 		}).Parse(string(contents))
 		err = tmpl.Execute(io.Writer(&b), ir)
 	}
