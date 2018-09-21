@@ -1,6 +1,32 @@
 package main
 
-import "testing"
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
+	"testing"
+	"time"
+
+	"html/template"
+)
+
+// https://github.com/validator/validator/wiki/Output-%C2%BB-JSON
+type ValidationResults struct {
+	Messages []struct {
+		Type         string `json:"type"`
+		LastLine     int    `json:"lastLine"`
+		LastColumn   int    `json:"lastColumn"`
+		Message      string `json:"message"`
+		Extract      string `json:"extract"`
+		HiliteStart  int    `json:"hiliteStart"`
+		HiliteLength int    `json:"hiliteLength"`
+		FirstColumn  int    `json:"firstColumn,omitempty"`
+		SubType      string `json:"subType,omitempty"`
+	} `json:"messages"`
+}
 
 func TestCloudinaryTransform(t *testing.T) {
 	type args struct {
@@ -51,4 +77,74 @@ func TestCloudinaryTransform(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSignoffIsValid(t *testing.T) {
+	var b bytes.Buffer
+	tmpl, err := template.New("signoff").Funcs(template.FuncMap{
+		"prettyDate": func(d time.Time) string { return d.Format("2 Jan 2006") },
+		"ymdDate":    func(d time.Time) string { return d.Format("2006-01-02") },
+		"increment":  func(i int) int { return i + 1 },
+		"domain":     func(s string) string { return fmt.Sprintf("%s.example.com", s) },
+	}).ParseFiles("templates/signoff.html")
+	if err != nil {
+		t.Errorf("signoff.html failed to parse, error = %v", err)
+		return
+	}
+
+	var ir InspectionReport
+
+	// jsonFile, err := os.Open("tests/test.json")
+	// if err != nil {
+	// 	t.Fatalf("tests/test.json failed to open, error = %v", err)
+	// }
+	// defer jsonFile.Close()
+
+	// byteValue, _ := ioutil.ReadAll(jsonFile)
+	// json.Unmarshal(byteValue, &ir)
+
+	err = tmpl.ExecuteTemplate(io.Writer(&b), "signoff.html", ir)
+	if err != nil {
+		t.Errorf("failed to execute, error = %v", err)
+		return
+	}
+
+	// err = ioutil.WriteFile("testme.html", b.Bytes(), 0644)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	req, err := http.NewRequest("POST", "https://validator.w3.org/nu/?out=json", bytes.NewReader(b.Bytes()))
+	req.Header.Set("Content-Type", "text/html")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	t.Log(resp.Status)
+	// body, _ := ioutil.ReadAll(resp.Body)
+	// err = ioutil.WriteFile("v.json", body, 0644)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	var v ValidationResults
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&v)
+
+	for _, m := range v.Messages {
+		if strings.Contains(m.Message, "flow") { // Ignore Print CSS: “flow”: Property “flow” doesn't exist.
+			continue
+		}
+		if strings.Contains(m.Message, "top-left") { // Ignore “top-left”: Parse Error
+			continue
+		}
+		if m.Type == "error" {
+			t.Errorf("signoff.html line %d: %s", m.LastLine, m.Message)
+		}
+	}
+
 }
