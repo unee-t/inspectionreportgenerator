@@ -42,13 +42,11 @@ func main() {
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
 	if err != nil {
 		log.WithError(err).Fatal("setting up credentials")
-		return
 	}
 	cfg.Region = endpoints.ApSoutheast1RegionID
 	e, err = env.New(cfg)
 	if err != nil {
-		log.WithError(err).Warn("error getting unee-t env")
-		return
+		log.WithError(err).Fatal("error getting unee-t env")
 	}
 
 	addr := ":" + os.Getenv("PORT")
@@ -93,7 +91,7 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 	var ir InspectionReport
 	err := decoder.Decode(&ir)
 	if err != nil {
-		log.WithError(err).Fatal("bad JSON")
+		log.WithError(err).Error("bad JSON")
 		http.Error(w, "JSON does not conform to https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go", http.StatusBadRequest)
 		return
 	}
@@ -101,7 +99,7 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 
 	output, err := genHTML(ir)
 	if err != nil {
-		log.WithError(err).Fatal("genHTML from handleJSON")
+		log.WithError(err).Error("genHTML from handleJSON")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -235,14 +233,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	err = decoder.Decode(&signoff, r.PostForm)
 
 	if err != nil {
-		log.WithError(err).Fatal("failed to decode form")
+		log.WithError(err).Error("failed to decode form")
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
 	output, err := genHTML(signoff)
 	if err != nil {
-		log.WithError(err).Fatal("failed to decode form")
+		log.WithError(err).Error("failed to decode form")
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -255,7 +253,7 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
 	if err != nil {
-		log.WithError(err).Fatal("setting up credentials")
+		log.WithError(err).Error("setting up credentials")
 		return
 	}
 	cfg.Region = endpoints.ApSoutheast1RegionID
@@ -285,7 +283,7 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 	res, err := http.DefaultClient.Do(req)
 
 	if err != nil {
-		log.WithError(err).Fatal("failed to make request")
+		log.WithError(err).Error("failed to make request")
 		return
 	}
 
@@ -297,7 +295,7 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 	basename := path.Base(url)
 	filename := time.Now().Format("2006-01-02") + "/pdfcool-" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
 	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String(e.Bucket()),
+		Bucket:      aws.String(e.Bucket("media")),
 		Body:        bytes.NewReader(body),
 		Key:         aws.String(filename),
 		ACL:         s3.ObjectCannedACLPublicRead,
@@ -308,11 +306,11 @@ func pdfcoolgen(url string) (pdfurl string, err error) {
 	_, err = s3req.Send()
 
 	if err != nil {
-		log.WithError(err).Fatal("failed to put")
+		log.WithError(err).Errorf("%+v, failed to put", putparams)
 		return
 	}
 
-	return fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket(), filename), err
+	return fmt.Sprintf("https://%s/%s", e.Udomain("media"), filename), err
 }
 
 func handlePDFgen(w http.ResponseWriter, r *http.Request) {
@@ -325,7 +323,7 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 
 	u, err := neturl.Parse(url)
 	if err != nil {
-		log.WithError(err).Fatal("not a URL")
+		log.WithError(err).Error("not a URL")
 		http.Error(w, "Missing URL", 400)
 		return
 	}
@@ -334,14 +332,14 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Source must be from our S3 region", 400)
 		return
 	}
-	if !strings.HasPrefix(u.Path, fmt.Sprintf("/%s/", e.Bucket())) {
+	if !strings.HasPrefix(u.Path, fmt.Sprintf("/%s/", e.Bucket("media"))) {
 		http.Error(w, "Source must be from our S3 path", 400)
 		return
 	}
 
 	url, err = pdfcoolgen(url)
 	if err != nil {
-		log.WithError(err).Fatal("failed to generate PDF")
+		log.WithError(err).Error("failed to generate PDF")
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -361,7 +359,7 @@ func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err er
 
 	jsonfilename := time.Now().Format("2006-01-02") + "/" + filename + ".json"
 	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String(e.Bucket()),
+		Bucket:      aws.String(e.Bucket("media")),
 		Body:        bytes.NewReader(dataJSON),
 		Key:         aws.String(jsonfilename),
 		ACL:         s3.ObjectCannedACLPublicRead,
@@ -371,7 +369,7 @@ func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err er
 	req := svc.PutObjectRequest(putparams)
 	_, err = req.Send()
 
-	return fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket(), jsonfilename), err
+	return fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket("media"), jsonfilename), err
 }
 
 // CloudinaryTransform takes a Cloudinary URL and outputs the transformations we want to see
@@ -478,7 +476,7 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 
 	htmlfilename := time.Now().Format("2006-01-02") + "/" + ir.ID + ".html"
 	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String(e.Bucket()),
+		Bucket:      aws.String(e.Bucket("media")),
 		Body:        bytes.NewReader(b.Bytes()),
 		Key:         aws.String(htmlfilename),
 		ACL:         s3.ObjectCannedACLPublicRead,
@@ -493,7 +491,7 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 	}
 
 	return responseHTML{
-		HTML: fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket(), htmlfilename),
+		HTML: fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket("media"), htmlfilename),
 		JSON: dumpurl,
 	}, err
 
