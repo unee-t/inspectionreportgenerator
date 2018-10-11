@@ -511,3 +511,9 @@ func updateImages(images []string) []string {
 	}
 	return images
 }
+
+// New is for testing with defaults
+func New() (ir InspectionReport) {
+	ir.Logo = "https://media.dev.unee-t.com/2018-08-15/logo.svg"
+	return
+}

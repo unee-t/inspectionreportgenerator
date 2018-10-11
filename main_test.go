@@ -92,7 +92,7 @@ func TestSignoffIsValid(t *testing.T) {
 		return
 	}
 
-	var ir InspectionReport
+	ir := New()
 
 	// jsonFile, err := os.Open("tests/test.json")
 	// if err != nil {
@@ -137,6 +137,9 @@ func TestSignoffIsValid(t *testing.T) {
 
 	for _, m := range v.Messages {
 		if strings.Contains(m.Message, "flow") { // Ignore Print CSS: “flow”: Property “flow” doesn't exist.
+			continue
+		}
+		if strings.Contains(m.Message, "size") { // Ignore Print CSS: “size”: Property “size” doesn't exist.
 			continue
 		}
 		if strings.Contains(m.Message, "top-left") { // Ignore “top-left”: Parse Error
