@@ -95,7 +95,7 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "JSON does not conform to https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go", http.StatusBadRequest)
 		return
 	}
-	log.Infof("%+v", ir)
+	// log.Infof("%+v", ir)
 
 	output, err := genHTML(ir)
 	if err != nil {
@@ -403,7 +403,14 @@ func randomHex(n int) (string, error) {
 
 func genHTML(ir InspectionReport) (output responseHTML, err error) {
 
+	if ir.Logo == "" {
+		ir.Logo = "https://media.dev.unee-t.com/2018-08-15/logo.svg"
+	} else {
+		log.Infof("Logo overridden to: %s", ir.Logo)
+	}
+
 	randomString, err := randomHex(4)
+
 	ir.ID = fmt.Sprintf("%s-%s", ir.ID, randomString)
 
 	ir.Report.Images = updateImages(ir.Report.Images)

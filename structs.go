@@ -71,6 +71,7 @@ type Room struct {
 // InspectionReport is the top level structure that holds a report
 type InspectionReport struct {
 	ID         string      `json:"id"`
+	Logo       string      `json:"logo"`
 	Date       time.Time   `json:"date"`
 	Signatures []Signature `json:"signatures"`
 	Unit       Unit        `json:"unit"`
