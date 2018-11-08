@@ -95,7 +95,8 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "JSON does not conform to https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go", http.StatusBadRequest)
 		return
 	}
-	// log.Infof("%+v", ir)
+
+	log.Infof("Generating HTML of %s", ir.ID)
 
 	output, err := genHTML(ir)
 	if err != nil {
@@ -369,7 +370,8 @@ func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err er
 	req := svc.PutObjectRequest(putparams)
 	_, err = req.Send()
 
-	return fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket("media"), jsonfilename), err
+	return fmt.Sprintf("https://%s/%s", e.Udomain("media"), jsonfilename), err
+
 }
 
 // CloudinaryTransform takes a Cloudinary URL and outputs the transformations we want to see
@@ -498,7 +500,7 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 	}
 
 	return responseHTML{
-		HTML: fmt.Sprintf("https://s3-ap-southeast-1.amazonaws.com/%s/%s", e.Bucket("media"), htmlfilename),
+		HTML: fmt.Sprintf("https://%s/%s", e.Udomain("media"), htmlfilename),
 		JSON: dumpurl,
 	}, err
 
