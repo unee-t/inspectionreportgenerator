@@ -375,16 +375,16 @@ func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err er
 }
 
 // CloudinaryTransform takes a Cloudinary URL and outputs the transformations we want to see
-func CloudinaryTransform(url string, transforms string) (transformedURL string, err error) {
+func CloudinaryTransform(url string, transforms string) (transformedURL string) {
 	// https://res.cloudinary.com/<cloud_name>/<resource_type>/<type>/<version>/<transformations>/<public_id>.<format>
 	// Optional values: resource_type, type, version, transformations, format
 	uParsed, err := neturl.ParseRequestURI(url)
 	if err != nil {
-		return "", err
+		return ""
 	}
 	// log.Infof("%+v\n", *uParsed)
 	if uParsed.Host != "res.cloudinary.com" {
-		return "", fmt.Errorf("%s is not a cloudinary host", uParsed.Host)
+		return ""
 	}
 	uParsed.Scheme = "https"
 	s := strings.Split(uParsed.Path, "/")
@@ -392,7 +392,7 @@ func CloudinaryTransform(url string, transforms string) (transformedURL string, 
 	// log.Infof("%+v", s)
 	uParsed.Path = strings.Join(append(s[0:3], s[len(s)-2:]...), "/")
 	// log.Infof("Right? %+v", uParsed.Path)
-	return uParsed.String(), nil
+	return uParsed.String()
 }
 
 func randomHex(n int) (string, error) {
@@ -415,26 +415,6 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 
 	ir.ID = fmt.Sprintf("%s-%s", ir.ID, randomString)
 
-	ir.Report.Images = updateImages(ir.Report.Images)
-	for item := 0; item < len(ir.Report.Inventory); item++ {
-		ir.Report.Inventory[item].Images = updateImages(ir.Report.Inventory[item].Images)
-	}
-	for room := 0; room < len(ir.Report.Rooms); room++ {
-		ir.Report.Rooms[room].Images = updateImages(ir.Report.Rooms[room].Images)
-
-		for item := 0; item < len(ir.Report.Rooms[room].Inventory); item++ {
-			ir.Report.Rooms[room].Inventory[item].Images = updateImages(ir.Report.Rooms[room].Inventory[item].Images)
-		}
-
-		for c := 0; c < len(ir.Report.Rooms[room].Cases); c++ {
-			ir.Report.Rooms[room].Cases[c].Images = updateImages(ir.Report.Rooms[room].Cases[c].Images)
-		}
-
-	}
-	for c := 0; c < len(ir.Report.Cases); c++ {
-		ir.Report.Cases[c].Images = updateImages(ir.Report.Cases[c].Images)
-	}
-
 	var t *template.Template
 	var b bytes.Buffer
 
@@ -443,6 +423,7 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		"ymdDate":    func(d time.Time) string { return d.Format("2006-01-02") },
 		"increment":  func(i int) int { return i + 1 },
 		"domain":     func(s string) string { return e.Udomain(s) },
+		"transform":  CloudinaryTransform,
 	}
 
 	if ir.Template == "" {
@@ -504,14 +485,6 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		JSON: dumpurl,
 	}, err
 
-}
-
-func updateImages(images []string) []string {
-	for i := 0; i < len(images); i++ {
-		images[i], _ = CloudinaryTransform(images[i], "c_fill,g_auto,h_500,w_500")
-		log.Infof("Updated: %s", images[i])
-	}
-	return images
 }
 
 // New is for testing with defaults

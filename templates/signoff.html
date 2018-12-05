@@ -305,7 +305,9 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Report.Images }}
 <figure>
-<img alt="" src="{{ . }}">
+<a href="{{ transform . "f_auto" }}" target="_blank">
+<img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
+</a>
 </figure>
 {{ end }}
 </div>
@@ -325,7 +327,9 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Images }}
 <figure>
-<img alt="" src="{{ . }}">
+<a href="{{ transform . "f_auto" }}" target="_blank">
+<img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
+</a>
 </figure>
 {{ end }}
 </div>
@@ -342,7 +346,9 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Images }}
 <figure>
-<img alt="" src="{{ . }}">
+<a href="{{ transform . "f_auto" }}" target="_blank">
+<img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
+</a>
 </figure>
 {{ end }}
 </div>
@@ -376,7 +382,9 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range $value.Images }}
 <figure>
-<img alt="{{ $value.Name }}" src="{{ . }}">
+<a href="{{ transform . "f_auto" }}" target="_blank">
+<img alt="{{ $value.Name }}" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
+</a>
 </figure>
 {{ end }}
 </div>
@@ -404,7 +412,9 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
     <div class="images">
       {{ range .Images }}
       <figure>
-        <img alt="" src="{{ . }}">
+		<a href="{{ transform . "f_auto" }}" target="_blank">
+		<img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
+		</a>
       </figure>
       {{ end }}
     </div>
@@ -424,7 +434,9 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Images }}
 <figure>
-<img alt="" src="{{ . }}">
+<a href="{{ transform . "f_auto" }}" target="_blank">
+<img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
+</a>
 </figure>
 {{ end }}
 </div>

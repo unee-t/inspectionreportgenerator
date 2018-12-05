@@ -64,14 +64,20 @@ func TestCloudinaryTransform(t *testing.T) {
 			wantTransformedURL: "https://res.cloudinary.com/unee-t-staging/c_fill,g_auto,h_500,w_500/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
 			wantErr:            false,
 		},
+
+		{
+			name: "Full size",
+			args: args{
+				url:        "http://res.cloudinary.com/unee-t-prod/image/upload/c_fill,g_auto,h_150,w_150/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+				transforms: "f_auto",
+			},
+			wantTransformedURL: "https://res.cloudinary.com/unee-t-prod/f_auto/Unee-T%20inspection%20report%20-%20placeholder%20images/table_succulent.jpg",
+			wantErr:            false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotTransformedURL, err := CloudinaryTransform(tt.args.url, tt.args.transforms)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("CloudinaryTransform() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			gotTransformedURL := CloudinaryTransform(tt.args.url, tt.args.transforms)
 			if gotTransformedURL != tt.wantTransformedURL {
 				t.Errorf("CloudinaryTransform() = %v, want %v", gotTransformedURL, tt.wantTransformedURL)
 			}
@@ -86,6 +92,7 @@ func TestSignoffIsValid(t *testing.T) {
 		"ymdDate":    func(d time.Time) string { return d.Format("2006-01-02") },
 		"increment":  func(i int) int { return i + 1 },
 		"domain":     func(s string) string { return fmt.Sprintf("%s.example.com", s) },
+		"transform":  func(a, b string) string { return "foobar" },
 	}).ParseFiles("templates/signoff.html")
 	if err != nil {
 		t.Errorf("signoff.html failed to parse, error = %v", err)
