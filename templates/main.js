@@ -54,10 +54,6 @@ new Vue({
       const path = window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + params.toString()
       window.history.pushState({path}, '', path)
 
-      fetch(`/pdfgen?url=${result.HTML}`)
-        .then(stream => stream.json())
-        .then(pdf => this.pdf = pdf.PDF)
-
       const url = new URL(window.location)
       var princeURL = url.origin.replace('pdfgen', 'prince')
       if (url.hostname === 'localhost') { princeURL = 'https://prince.dev.unee-t.com' }

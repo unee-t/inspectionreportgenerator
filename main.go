@@ -12,8 +12,6 @@ import (
 	"net/http/httputil"
 	neturl "net/url"
 	"os"
-	"path"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -62,7 +60,6 @@ func main() {
 	app.HandleFunc("/", env.Towr(CSRF(http.HandlerFunc(handleIndex)))).Methods("GET")
 	app.HandleFunc("/htmlgen", env.Towr(CSRF(http.HandlerFunc(handlePost)))).Methods("POST")
 	app.HandleFunc("/jsonhtmlgen", env.Towr(CSRF(http.HandlerFunc(handleJSON)))).Methods("POST")
-	app.HandleFunc("/pdfgen", handlePDFgen).Methods("GET")
 	app.HandleFunc("/", env.Towr(env.Protect(http.HandlerFunc(handleJSON), e.GetSecret("API_ACCESS_TOKEN"))))
 
 	if err := http.ListenAndServe(addr, app); err != nil {
@@ -256,101 +253,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, output)
 
-}
-
-func pdfcoolgen(url string) (pdfurl string, err error) {
-
-	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("uneet-dev"))
-	if err != nil {
-		log.WithError(err).Error("setting up credentials")
-		return
-	}
-	cfg.Region = endpoints.ApSoutheast1RegionID
-
-	// https://documenter.getpostman.com/view/2810998/pdfcool/77mXfrG
-	payload := new(bytes.Buffer)
-	enc := json.NewEncoder(payload)
-	enc.SetIndent("", "    ")
-	enc.SetEscapeHTML(false)
-	enc.Encode(struct {
-		URL    string `json:"url"`
-		Screen bool   `json:"screen"`
-		Format string `json:"format"`
-	}{
-		url,
-		false,
-		"A4",
-	})
-
-	log.Infof("pdf.cool payload: %s", payload.String())
-
-	req, err := http.NewRequest("POST", "https://pdf.cool/generate", payload)
-
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "Bearer "+e.GetSecret("PDFCOOLTOKEN"))
-
-	res, err := http.DefaultClient.Do(req)
-
-	if err != nil {
-		log.WithError(err).Error("failed to make request")
-		return
-	}
-
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-
-	svc := s3.New(cfg)
-
-	basename := path.Base(url)
-	filename := time.Now().Format("2006-01-02") + "/pdfcool-" + strings.TrimSuffix(basename, filepath.Ext(basename)) + ".pdf"
-	putparams := &s3.PutObjectInput{
-		Bucket:      aws.String(e.Bucket("media")),
-		Body:        bytes.NewReader(body),
-		Key:         aws.String(filename),
-		ACL:         s3.ObjectCannedACLPublicRead,
-		ContentType: aws.String("application/pdf; charset=UTF-8"),
-	}
-
-	s3req := svc.PutObjectRequest(putparams)
-	_, err = s3req.Send()
-
-	if err != nil {
-		log.WithError(err).Errorf("%+v, failed to put", putparams)
-		return
-	}
-
-	return fmt.Sprintf("https://%s/%s", e.Udomain("media"), filename), err
-}
-
-func handlePDFgen(w http.ResponseWriter, r *http.Request) {
-	url := r.URL.Query().Get("url")
-
-	if url == "" {
-		http.Error(w, "Missing URL", 400)
-		return
-	}
-
-	u, err := neturl.Parse(url)
-	if err != nil {
-		log.WithError(err).Error("not a URL")
-		http.Error(w, "Missing URL", 400)
-		return
-	}
-
-	log.Infof("Source URL: %+v", u)
-
-	url, err = pdfcoolgen(url)
-	if err != nil {
-		log.WithError(err).Error("failed to generate PDF")
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	response.JSON(w, struct {
-		PDF string
-	}{
-		url,
-	})
 }
 
 func dump(svc *s3.S3, filename string, data interface{}) (dumpurl string, err error) {
