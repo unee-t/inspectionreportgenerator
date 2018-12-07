@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	neturl "net/url"
 	"os"
 	"path"
@@ -87,12 +88,19 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleJSON(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
+
+	buf := &bytes.Buffer{}
+	tee := io.TeeReader(r.Body, buf)
+	defer r.Body.Close()
+
+	decoder := json.NewDecoder(tee)
 	var ir InspectionReport
 	err := decoder.Decode(&ir)
 	if err != nil {
-		log.WithError(err).Error("bad JSON")
-		http.Error(w, "JSON does not conform to https://github.com/unee-t/wetsignaturetopdfprototype/blob/master/structs.go", http.StatusBadRequest)
+
+		dump, _ := httputil.DumpRequest(r, false)
+		log.WithError(err).Errorf("Dump: %s\nBody: %+v", dump, buf)
+		http.Error(w, "JSON does not conform to https://github.com/unee-t/inspectionreportgenerator/blob/master/structs.go", http.StatusBadRequest)
 		return
 	}
 
@@ -329,14 +337,7 @@ func handlePDFgen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if u.Host != "s3-ap-southeast-1.amazonaws.com" {
-		http.Error(w, "Source must be from our S3 region", 400)
-		return
-	}
-	if !strings.HasPrefix(u.Path, fmt.Sprintf("/%s/", e.Bucket("media"))) {
-		http.Error(w, "Source must be from our S3 path", 400)
-		return
-	}
+	log.Infof("Source URL: %+v", u)
 
 	url, err = pdfcoolgen(url)
 	if err != nil {

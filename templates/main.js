@@ -68,7 +68,7 @@ new Vue({
         .then(pdf => this.ppdf = pdf.PDF)
     },
     async submitJson (x) {
-      // console.log('Submitting JSON', this.json)
+      console.log('Submitting JSON', this.json)
       const result = await fetch('/jsonhtmlgen', { method: 'POST',
         credentials: 'same-origin',
         headers: { 'X-CSRF-Token': x.target.elements['gorilla.csrf.Token'] ? x.target.elements['gorilla.csrf.Token'].value : '' },
