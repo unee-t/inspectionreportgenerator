@@ -305,9 +305,7 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Report.Images }}
 <figure>
-<a href="{{ transform . "f_auto" }}" target="_blank">
 <img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
-</a>
 </figure>
 {{ end }}
 </div>
@@ -327,9 +325,7 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Images }}
 <figure>
-<a href="{{ transform . "f_auto" }}" target="_blank">
 <img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
-</a>
 </figure>
 {{ end }}
 </div>
@@ -346,9 +342,7 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Images }}
 <figure>
-<a href="{{ transform . "f_auto" }}" target="_blank">
 <img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
-</a>
 </figure>
 {{ end }}
 </div>
@@ -382,9 +376,7 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range $value.Images }}
 <figure>
-<a href="{{ transform . "f_auto" }}" target="_blank">
 <img alt="{{ $value.Name }}" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
-</a>
 </figure>
 {{ end }}
 </div>
@@ -412,9 +404,7 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
     <div class="images">
       {{ range .Images }}
       <figure>
-		<a href="{{ transform . "f_auto" }}" target="_blank">
 		<img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
-		</a>
       </figure>
       {{ end }}
     </div>
@@ -434,9 +424,7 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <div class="images">
 {{ range .Images }}
 <figure>
-<a href="{{ transform . "f_auto" }}" target="_blank">
 <img alt="" src="{{ transform . "c_fill,g_auto,h_500,w_500" }}">
-</a>
 </figure>
 {{ end }}
 </div>
