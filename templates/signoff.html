@@ -444,7 +444,11 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <table class="signature">
 <tr><td><span class="name"><strong>{{ $value.Name }}</strong></span></td></tr>
 <tr><td><span class="role">{{ $value.Role }}</span></td></tr>
-  <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
+{{if $value.DataURI }}
+<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
+{{ else }}
+<tr><td><strong style="background-color: pink">MISSING SIGNATURE</strong></td></tr>
+{{ end }}
 </table>
 {{ end }}
 {{ end }}
@@ -459,7 +463,11 @@ Reference: <a href="https://{{ domain "media" }}/{{ ymdDate .Date }}/{{ .ID }}.p
 <table class="signature">
 <tr><td><span class="name"><strong>{{ $value.Name }}</strong></span></td></tr>
 <tr><td><span class="role">{{ $value.Role }}</span></td></tr>
-  <tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
+{{if $value.DataURI }}
+<tr><td><img alt="{{ $value.Name }}'s signature" src="{{ $value.DataURI }}" /></td></tr>
+{{ else }}
+<tr><td><strong style="background-color: pink">MISSING SIGNATURE</strong></td></tr>
+{{ end }}
 </table>
 {{ end }}
 {{ end }}

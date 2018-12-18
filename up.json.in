@@ -7,6 +7,9 @@
       "zone": "dev.unee-t.com"
     }
   },
+  "cors": {
+    "enable": true
+  },
   "regions": [
     "ap-southeast-1"
   ],
