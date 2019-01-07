@@ -316,7 +316,9 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 
 	randomString, err := randomHex(4)
 
-	ir.ID = fmt.Sprintf("%s-%s", ir.ID, randomString)
+	if !ir.Force {
+		ir.ID = fmt.Sprintf("%s-%s", ir.ID, randomString)
+	}
 
 	var t *template.Template
 	var b bytes.Buffer

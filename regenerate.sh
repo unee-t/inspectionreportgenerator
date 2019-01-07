@@ -1,6 +1,8 @@
 #!/bin/bash
 INPUT=$1
 
+# aws --profile uneet-dev s3 ls --recursive s3://dev-media-unee-t/ | grep json$ | grep 2018-11-23 | while read -r _ _ _ fn; do echo s3://dev-media-unee-t/$fn; done
+
 if test "${INPUT##*.}" != "json"
 then
 	echo Require JSON file, not $INPUT
@@ -40,3 +42,5 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'cache-control: no-cache' \
   -d "{ \"document_url\": \"$HTML\", \"date\": \"$date\"}"
+
+#aws --profile uneet-dev cloudfront create-invalidation --distribution-id E2L4KVYCVKXLA1 --invalidation-batch "{ \"Paths\": { \"Quantity\": 1, \"Items\": [ \"/*\" ] }, \"CallerReference\": \"$(shell date +%s)\" }"
