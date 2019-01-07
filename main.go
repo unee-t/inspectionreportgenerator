@@ -368,6 +368,10 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 	log.Infof("dumpurl %s", dumpurl)
 
 	htmlfilename := time.Now().Format("2006-01-02") + "/" + ir.ID + ".html"
+	if ir.Force {
+		htmlfilename = ir.Date.Format("2006-01-02") + "/" + ir.ID + ".html"
+	}
+
 	putparams := &s3.PutObjectInput{
 		Bucket:      aws.String(e.Bucket("media")),
 		Body:        bytes.NewReader(b.Bytes()),

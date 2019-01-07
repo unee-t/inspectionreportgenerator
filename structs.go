@@ -77,4 +77,5 @@ type InspectionReport struct {
 	Unit       Unit        `json:"unit"`
 	Report     Report      `json:"report"`
 	Template   string      `json:"template"`
+	Force      bool        `json:"force"`
 }
