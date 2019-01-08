@@ -309,9 +309,9 @@ func randomHex(n int) (string, error) {
 func genHTML(ir InspectionReport) (output responseHTML, err error) {
 
 	if ir.Logo == "" {
-		ir.Logo = "https://media.dev.unee-t.com/2018-08-15/logo.svg"
+		ir.Logo = "https://media.unee-t.com/2018-06-14/logo.svg"
 	} else {
-		log.Infof("Logo overridden to: %s", ir.Logo)
+		log.Infof("Empty logo, set to: %s", ir.Logo)
 	}
 
 	randomString, err := randomHex(4)
@@ -394,10 +394,4 @@ func genHTML(ir InspectionReport) (output responseHTML, err error) {
 		JSON: dumpurl,
 	}, err
 
-}
-
-// New is for testing with defaults
-func New() (ir InspectionReport) {
-	ir.Logo = "https://media.dev.unee-t.com/2018-08-15/logo.svg"
-	return
 }
