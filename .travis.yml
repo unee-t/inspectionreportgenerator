@@ -1,12 +1,13 @@
 sudo: required
 language: go
+go:
+ - tip
 
 before_install:
   - travis_retry curl -sf https://up.apex.sh/install | sudo sh
   - sudo up upgrade
 
 install:
-  - go get -t ./...
   - sudo apt-get install jq -y
 
 script:
